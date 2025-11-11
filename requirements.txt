@@ -1,0 +1,8 @@
+autogen
+fastapi
+uvicorn
+neo4j
+mysql-connector-python
+redis
+requests
+python-dotenv
