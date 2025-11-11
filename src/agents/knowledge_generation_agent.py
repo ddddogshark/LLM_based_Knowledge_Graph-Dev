@@ -30,7 +30,8 @@ def generate_knowledge(topic: str) -> str:
         response = requests.post(DEEPSEEK_API_URL, headers=headers, data=json.dumps(data))
         response.raise_for_status()  # Raise an exception for HTTP errors
         response_json = response.json()
-        return response_json.get("choices", [{}])[0].get("message", {}).get("content", "No content generated.")
+        content = response_json.get("choices", [{}])[0].get("message", {}).get("content")
+        return content if content is not None else "No content generated."
     except requests.exceptions.RequestException as e:
         return f"Error calling DeepSeek API: {e}"
     except json.JSONDecodeError:
