@@ -18,7 +18,7 @@ def extract_triplets(text: str) -> list[dict]:
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Authorization": f"{DEEPSEEK_API_KEY}",
     }
 
     prompt = f"""
@@ -37,7 +37,7 @@ def extract_triplets(text: str) -> list[dict]:
     """
 
     data = {
-        "model": "DeepSeek-R1-671B",
+        "model": "Qwen",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.3, # Lower temperature for more deterministic output
     }

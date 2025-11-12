@@ -30,11 +30,11 @@ def test_deepseek():
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}",
+        "Authorization": f"{api_key}",
     }
 
     data = {
-        "model": "DeepSeek-R1-671B",
+        "model": "Qwen",
         "messages": [{"role": "user", "content": "This is a test."}],
         "temperature": 0.7,
     }

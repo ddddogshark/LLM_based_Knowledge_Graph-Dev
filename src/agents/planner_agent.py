@@ -18,7 +18,7 @@ def plan_course_kg_construction(course_name: str) -> list[str]:
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Authorization": f"{DEEPSEEK_API_KEY}",
     }
 
     prompt = f"""
@@ -41,7 +41,7 @@ def plan_course_kg_construction(course_name: str) -> list[str]:
     """
 
     data = {
-        "model": "DeepSeek-R1-671B",
+        "model": "Qwen",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.5,
     }

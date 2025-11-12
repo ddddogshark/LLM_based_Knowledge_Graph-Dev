@@ -17,11 +17,11 @@ def generate_knowledge(topic: str) -> str:
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Authorization": f"{DEEPSEEK_API_KEY}",
     }
 
     data = {
-        "model": "DeepSeek-R1-671B",
+        "model": "Qwen",
         "messages": [{"role": "user", "content": f"Generate detailed knowledge points about: {topic}"}],
         "temperature": 0.7,
     }
