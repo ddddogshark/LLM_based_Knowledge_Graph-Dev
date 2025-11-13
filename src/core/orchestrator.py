@@ -11,19 +11,19 @@ class Orchestrator:
         self.current_stage = None
         self.context: Dict[str, Any] = {} # Shared context for the pipeline
 
-    def add_stage(self, stage_name: str, agents: List[str], gate_function: Callable = None, description: str = ""):
+    def add_stage(self, stage_name: str, agents: List, gate_function: Callable = None, description: str = ""):
         """
         Adds a stage to the pipeline.
         :param stage_name: Unique name for the stage.
-        :param agents: List of agent names involved in this stage.
-        :param gate_function: A callable that acts as a quality gate. It should return True for approval, False for rejection.
+        :param agents: List of agent names or (agent_name, method_name) tuples.
+        :param gate_function: A callable that acts as a quality gate.
         :param description: Description of the stage.
         """
         self.pipeline_stages[stage_name] = {
             "agents": agents,
             "gate_function": gate_function,
             "description": description,
-            "status": "PENDING" # PENDING, IN_PROGRESS, COMPLETED, FAILED, REJECTED
+            "status": "PENDING"
         }
         print(f"Stage '{stage_name}' added to the pipeline.")
 
@@ -45,30 +45,27 @@ class Orchestrator:
             stage_info['status'] = "IN_PROGRESS"
 
             try:
-                # Execute agents for the current stage
                 await self._execute_stage_agents(stage_name)
 
-                # Apply quality gate if defined
                 if stage_info["gate_function"]:
                     print(f"--- Applying Quality Gate for Stage: {stage_name} ---")
                     gate_passed = await stage_info["gate_function"](self.context)
                     if gate_passed:
                         print(f"Quality Gate for '{stage_name}' PASSED.")
                         stage_info['status'] = "COMPLETED"
-                        i += 1 # Move to next stage
+                        i += 1
                     else:
                         print(f"Quality Gate for '{stage_name}' REJECTED. Re-running stage.")
                         stage_info['status'] = "REJECTED"
-                        # If rejected, re-run the current stage. No change to 'i'.
                 else:
                     print(f"No Quality Gate for Stage: {stage_name}. Proceeding to next stage.")
                     stage_info['status'] = "COMPLETED"
-                    i += 1 # Move to next stage
+                    i += 1
 
             except Exception as e:
                 print(f"Error during stage '{stage_name}': {e}")
                 stage_info['status'] = "FAILED"
-                break # Stop pipeline on error
+                break
 
         print("\n--- Pipeline Execution Finished ---")
         return self.context
@@ -76,16 +73,19 @@ class Orchestrator:
     async def _execute_stage_agents(self, stage_name: str):
         """
         Executes all agents assigned to a specific stage.
-        Agents are expected to update the shared context.
         """
         stage_agents = self.pipeline_stages[stage_name]["agents"]
-        for agent_name in stage_agents:
+        for agent_spec in stage_agents:
+            if isinstance(agent_spec, tuple):
+                agent_name, method_name = agent_spec
+            else:
+                agent_name, method_name = agent_spec, "execute"
+
             agent = self.agent_manager.get_agent(agent_name)
-            print(f"  Executing Agent: {agent.name} ({agent.description})")
-            # Agents should update self.context directly or return updates
-            # For simplicity, agents will receive and return context for now.
-            # A more sophisticated approach might involve message queues or shared memory.
-            self.context = await agent.execute(self.context)
+            method_to_call = getattr(agent, method_name)
+            
+            print(f"  Executing Agent: {agent.name}, Method: {method_name} ({agent.description})")
+            self.context = await method_to_call(self.context)
             print(f"  Agent '{agent.name}' finished.")
 
     def get_pipeline_status(self):
@@ -94,6 +94,7 @@ class Orchestrator:
 # Example usage (for testing purposes)
 if __name__ == "__main__":
     import asyncio
+    import json
     # Stage 1 Agents
     from src.agents.demand_analysis_agent import DemandAnalysisAgent
     from src.agents.subject_overview_agent import SubjectOverviewAgent
@@ -139,52 +140,55 @@ if __name__ == "__main__":
 
     async def subject_level_review_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Subject-Level Review Meeting (Gate 3) ---")
-        validation_agent = ValidationCoordinatorAgent()
-        triplets = context.get("knowledge_subgraph_triplets", [])
-        if not triplets:
+        subgraphs = context.get("subgraphs", {})
+        if not subgraphs or not any(subgraphs.values()):
             print("Gate 3: No knowledge triplets were generated for the sub-graph. REJECTED.")
             return False
         
-        # For simplicity, we'll just check if a reasonable number of triplets were generated.
-        # A real gate would involve much more complex validation, e.g., checking for graph connectivity,
-        # looking for cross-course conflicts, or identifying knowledge gaps.
-        if len(triplets) > 5:
-            print(f"Gate 3: Sub-graph with {len(triplets)} triplets looks reasonable. APPROVED.")
+        triplet_count = sum(len(triplets) for triplets in subgraphs.values())
+        if triplet_count > 5:
+            print(f"Gate 3: Sub-graph with {triplet_count} triplets looks reasonable. APPROVED.")
             return True
         else:
-            print(f"Gate 3: Only {len(triplets)} triplets were generated. This seems too low. REJECTED.")
+            print(f"Gate 3: Only {triplet_count} triplets were generated. This seems too low. REJECTED.")
+            return False
+
+    async def final_result_review_gate(context: Dict[str, Any]) -> bool:
+        print("\n--- Simulating Final Result Review Meeting (Gate 4) ---")
+        validation_agent = ValidationCoordinatorAgent()
+        # This gate simulates a final review by human experts.
+        # We'll use the validation agent to perform a final check.
+        test_passed = await validation_agent.perform_integration_test(context)
+        if test_passed:
+            print("Gate 4: Final knowledge graph has passed integration testing. APPROVED for delivery.")
+            return True
+        else:
+            print("Gate 4: Final knowledge graph failed integration testing. REJECTED.")
             return False
 
     async def main():
         agent_manager = AgentManager()
         
-        # Register Stage 1 Agents
+        # Register Agents
         agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
         agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.")
         agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
-
-        # Register Stage 2 Agents
         agent_manager.register_agent(lambda name, desc: CourseAgent(name, desc, "Machine Learning"), "ML_CourseAgent", "Provides resources for the Machine Learning course.")
         agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.")
         agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.")
         agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.")
         agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.")
-
-        # Register Stage 3 Agents
         agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.")
         agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.")
-        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds knowledge sub-graphs by extracting triplets.")
+        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.")
 
         orchestrator = Orchestrator(agent_manager)
         
-        # Add Stage 1
+        # Add Stages
         orchestrator.add_stage("Stage1_DemandAnalysisAndPlanning", ["DemandAnalysisAgent", "SubjectOverviewAgent"], demand_review_gate, "Analyze user requirements and create an overall subject plan.")
-        
-        # Add Stage 2
         orchestrator.add_stage("Stage2_DataCollectionAndPreprocessing", ["ML_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate, "Collect and preprocess data into standardized knowledge point drafts.")
-
-        # Add Stage 3
         orchestrator.add_stage("Stage3_KnowledgeRefinementAndCourseConstruction", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate, "Refine knowledge points, add practical examples, and build a course sub-graph.")
+        orchestrator.add_stage("Stage4_KnowledgeGraphIntegrationAndValidation", [("KgBuilderAgent", "integrate_and_store"), ("ValidationCoordinatorAgent", "perform_integration_test")], final_result_review_gate, "Integrate sub-graphs into a unified knowledge graph and perform validation.")
 
         initial_context = {"course_name": "Machine Learning", "resource_files": ["lecture1.pptx", "book_chapter.pdf"]}
         final_context = await orchestrator.run_pipeline(initial_context)

@@ -6,10 +6,14 @@ import json
 
 class KgBuilderAgent(BaseAgent):
     def __init__(self):
-        super().__init__("KgBuilderAgent", "Builds knowledge sub-graphs by extracting triplets from enriched knowledge points.")
+        super().__init__("KgBuilderAgent", "Builds and integrates knowledge graphs.")
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting knowledge sub-graph construction...")
+        """
+        This method is used in Stage 3 to create a course-level sub-graph.
+        It extracts triplets from enriched knowledge points.
+        """
+        self._log("Starting knowledge sub-graph construction (triplet extraction)...")
         
         enriched_knowledge: List[Dict[str, str]] = context.get("enriched_knowledge_points", [])
         
@@ -45,8 +49,6 @@ class KgBuilderAgent(BaseAgent):
             triplets_json_str = self.llm_service.generate_text(prompt, temperature=0.3)
             
             try:
-                # The LLM might return the JSON string within a code block or with extra text.
-                # We'll try to find the JSON list within the response.
                 start_index = triplets_json_str.find('[')
                 end_index = triplets_json_str.rfind(']') + 1
                 if start_index != -1 and end_index != -1:
@@ -62,18 +64,44 @@ class KgBuilderAgent(BaseAgent):
                 self._log(f"Error decoding JSON from LLM response: {e}")
                 self._log(f"LLM Response was: {triplets_json_str}")
 
-        # Add the triplets to the context
-        if "knowledge_subgraph_triplets" not in context:
-            context["knowledge_subgraph_triplets"] = []
-        context["knowledge_subgraph_triplets"].extend(all_triplets)
+        # Add the triplets to the context for the current course
+        course_name = context.get("course_name", "unknown_course")
+        if "subgraphs" not in context:
+            context["subgraphs"] = {}
+        context["subgraphs"][course_name] = all_triplets
         
-        self._log(f"Completed sub-graph construction with a total of {len(all_triplets)} triplets.")
+        self._log(f"Completed sub-graph construction for {course_name} with {len(all_triplets)} triplets.")
         
-        # For now, we will also store them in Neo4j directly.
-        # In a more complex scenario, this might happen in a later stage.
-        if all_triplets:
-            self._log("Storing triplets in Neo4j...")
-            self.neo4j_driver.store_triplets(all_triplets)
+        return context
+
+    async def integrate_and_store(self, context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        This method is used in Stage 4 to integrate all sub-graphs and store them.
+        """
+        self._log("Starting knowledge graph integration and storage...")
+        subgraphs = context.get("subgraphs", {})
+        
+        if not subgraphs:
+            self._log("No sub-graphs found to integrate.")
+            return context
+
+        # In a real multi-course scenario, this is where you would perform
+        # entity alignment, conflict resolution, etc., across the different sub-graphs.
+        # For now, we will just merge all triplets from all sub-graphs.
+        
+        integrated_triplets = []
+        for course_name, triplets in subgraphs.items():
+            self._log(f"Integrating {len(triplets)} triplets from course: {course_name}")
+            integrated_triplets.extend(triplets)
+            
+        self._log(f"Total of {len(integrated_triplets)} triplets integrated.")
+        
+        # Store the final, integrated triplets in Neo4j
+        if integrated_triplets:
+            self._log("Storing integrated triplets in Neo4j...")
+            self.neo4j_driver.store_triplets(integrated_triplets)
             self._log("Finished storing triplets.")
             
+        context["integrated_triplets"] = integrated_triplets
+        
         return context
