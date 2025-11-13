@@ -49,7 +49,7 @@ class Orchestrator:
 
                 if stage_info["gate_function"]:
                     print(f"--- Applying Quality Gate for Stage: {stage_name} ---")
-                    gate_passed = await stage_info["gate_function"](self.context)
+                    gate_passed = await stage_info["gate_function"](self.context, self.agent_manager)
                     if gate_passed:
                         print(f"Quality Gate for '{stage_name}' PASSED.")
                         stage_info['status'] = "COMPLETED"
@@ -112,9 +112,9 @@ if __name__ == "__main__":
     # Stage 5 Agents
     from src.agents.report_generation_agent import ReportGenerationAgent
 
-    async def demand_review_gate(context: Dict[str, Any]) -> bool:
+    async def demand_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Demand Review Meeting (Gate 1) ---")
-        validation_agent = ValidationCoordinatorAgent()
+        validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
         demand_report = context.get("demand_spec_doc", "")
         subject_plan = context.get("subject_overview_plan", "")
         demand_review_passed = await validation_agent.review_document("Demand Specification Document", demand_report, "Ensure the document clearly defines project goals, scope, and success metrics.")
@@ -125,9 +125,9 @@ if __name__ == "__main__":
         print("Gate 1: Demand or plan missing key elements. REJECTED.")
         return False
 
-    async def data_acceptance_gate(context: Dict[str, Any]) -> bool:
+    async def data_acceptance_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Data Acceptance Meeting (Gate 2) ---")
-        validation_agent = ValidationCoordinatorAgent()
+        validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
         drafts = context.get("knowledge_point_drafts", [])
         if not drafts:
             print("Gate 2: No knowledge point drafts were generated. REJECTED.")
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         print("Gate 2: Knowledge point drafts failed quality check. REJECTED.")
         return False
 
-    async def subject_level_review_gate(context: Dict[str, Any]) -> bool:
+    async def subject_level_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Subject-Level Review Meeting (Gate 3) ---")
         subgraphs = context.get("subgraphs", {})
         if not subgraphs or not any(subgraphs.values()):
@@ -155,9 +155,9 @@ if __name__ == "__main__":
             print(f"Gate 3: Only {triplet_count} triplets were generated. This seems too low. REJECTED.")
             return False
 
-    async def final_result_review_gate(context: Dict[str, Any]) -> bool:
+    async def final_result_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Final Result Review Meeting (Gate 4) ---")
-        validation_agent = ValidationCoordinatorAgent()
+        validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
         test_passed = await validation_agent.perform_integration_test(context)
         if test_passed:
             print("Gate 4: Final knowledge graph has passed integration testing. APPROVED for delivery.")
