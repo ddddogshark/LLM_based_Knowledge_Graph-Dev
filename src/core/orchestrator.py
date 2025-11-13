@@ -94,105 +94,99 @@ class Orchestrator:
 # Example usage (for testing purposes)
 if __name__ == "__main__":
     import asyncio
+    # Stage 1 Agents
     from src.agents.demand_analysis_agent import DemandAnalysisAgent
     from src.agents.subject_overview_agent import SubjectOverviewAgent
     from src.agents.validation_coordinator_agent import ValidationCoordinatorAgent
+    # Stage 2 Agents
     from src.agents.course_agent import CourseAgent
     from src.agents.multimodal_parser_agent import MultimodalParserAgent
     from src.agents.internet_scraper_agent import InternetScraperAgent
     from src.agents.academic_scraper_agent import AcademicScraperAgent
     from src.agents.content_understanding_agent import ContentUnderstandingAgent
+    # Stage 3 Agents
+    from src.agents.theoretical_analysis_agent import TheoreticalAnalysisAgent
+    from src.agents.practical_analysis_agent import PracticalAnalysisAgent
+    from src.agents.kg_builder_agent import KgBuilderAgent
 
     async def demand_review_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Demand Review Meeting (Gate 1) ---")
         validation_agent = ValidationCoordinatorAgent()
         demand_report = context.get("demand_spec_doc", "")
         subject_plan = context.get("subject_overview_plan", "")
-
-        demand_review_passed = await validation_agent.review_document(
-            "Demand Specification Document", demand_report,
-            "Ensure the document clearly defines project goals, scope, target audience, deliverables, and success metrics."
-        )
-        subject_plan_review_passed = await validation_agent.review_document(
-            "Subject Knowledge System Overall Plan", subject_plan,
-            "Ensure the plan includes core course list, logical relationships, unified data specification, and task breakdown."
-        )
-
+        demand_review_passed = await validation_agent.review_document("Demand Specification Document", demand_report, "Ensure the document clearly defines project goals, scope, and success metrics.")
+        subject_plan_review_passed = await validation_agent.review_document("Subject Knowledge System Overall Plan", subject_plan, "Ensure the plan includes core course list, logical relationships, and task breakdown.")
         if demand_review_passed and subject_plan_review_passed:
             print("Gate 1: Demand and plan look good. APPROVED.")
             return True
-        else:
-            print("Gate 1: Demand or plan missing key elements or failed review. REJECTED.")
-            return False
+        print("Gate 1: Demand or plan missing key elements. REJECTED.")
+        return False
 
     async def data_acceptance_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Data Acceptance Meeting (Gate 2) ---")
         validation_agent = ValidationCoordinatorAgent()
         drafts = context.get("knowledge_point_drafts", [])
-
         if not drafts:
             print("Gate 2: No knowledge point drafts were generated. REJECTED.")
             return False
-
-        # Simulate a review of a sample of the drafts
         sample_draft = drafts[0]['draft']
-        review_passed = await validation_agent.review_document(
-            "Knowledge Point Draft Sample", sample_draft,
-            "Ensure the draft is a concise summary of the key information, identifying the main concept, its definition, and key relationships."
-        )
-
+        review_passed = await validation_agent.review_document("Knowledge Point Draft Sample", sample_draft, "Ensure the draft is a concise summary of key information.")
         if review_passed:
             print("Gate 2: Knowledge point drafts seem to be of good quality. APPROVED.")
             return True
+        print("Gate 2: Knowledge point drafts failed quality check. REJECTED.")
+        return False
+
+    async def subject_level_review_gate(context: Dict[str, Any]) -> bool:
+        print("\n--- Simulating Subject-Level Review Meeting (Gate 3) ---")
+        validation_agent = ValidationCoordinatorAgent()
+        triplets = context.get("knowledge_subgraph_triplets", [])
+        if not triplets:
+            print("Gate 3: No knowledge triplets were generated for the sub-graph. REJECTED.")
+            return False
+        
+        # For simplicity, we'll just check if a reasonable number of triplets were generated.
+        # A real gate would involve much more complex validation, e.g., checking for graph connectivity,
+        # looking for cross-course conflicts, or identifying knowledge gaps.
+        if len(triplets) > 5:
+            print(f"Gate 3: Sub-graph with {len(triplets)} triplets looks reasonable. APPROVED.")
+            return True
         else:
-            print("Gate 2: Knowledge point drafts failed quality check. REJECTED.")
+            print(f"Gate 3: Only {len(triplets)} triplets were generated. This seems too low. REJECTED.")
             return False
 
     async def main():
         agent_manager = AgentManager()
         
         # Register Stage 1 Agents
-        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements and clarifies project scope.")
-        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject knowledge system planning based on demand.")
-        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation, quality gates, and review meetings.")
+        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
+        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.")
+        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
 
         # Register Stage 2 Agents
-        # Note: CourseAgent would be dynamically instantiated per course. Here we register a generic one for the main course.
         agent_manager.register_agent(lambda name, desc: CourseAgent(name, desc, "Machine Learning"), "ML_CourseAgent", "Provides resources for the Machine Learning course.")
-        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats (PPT, PDF, etc.) into text.")
-        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages for information based on keywords.")
-        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers for information based on keywords.")
-        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into structured knowledge point drafts.")
+        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.")
+        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.")
+        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.")
+        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.")
+
+        # Register Stage 3 Agents
+        agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.")
+        agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.")
+        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds knowledge sub-graphs by extracting triplets.")
 
         orchestrator = Orchestrator(agent_manager)
         
         # Add Stage 1
-        orchestrator.add_stage(
-            "Stage1_DemandAnalysisAndPlanning",
-            agents=["DemandAnalysisAgent", "SubjectOverviewAgent"],
-            gate_function=demand_review_gate,
-            description="Analyze user requirements and create an overall subject plan."
-        )
+        orchestrator.add_stage("Stage1_DemandAnalysisAndPlanning", ["DemandAnalysisAgent", "SubjectOverviewAgent"], demand_review_gate, "Analyze user requirements and create an overall subject plan.")
         
         # Add Stage 2
-        orchestrator.add_stage(
-            "Stage2_DataCollectionAndPreprocessing",
-            agents=[
-                "ML_CourseAgent", 
-                "MultimodalParserAgent", 
-                "InternetScraperAgent", 
-                "AcademicScraperAgent", 
-                "ContentUnderstandingAgent"
-            ],
-            gate_function=data_acceptance_gate,
-            description="Collect and preprocess data from various sources into standardized knowledge point drafts."
-        )
+        orchestrator.add_stage("Stage2_DataCollectionAndPreprocessing", ["ML_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate, "Collect and preprocess data into standardized knowledge point drafts.")
 
-        initial_context = {
-            "course_name": "Machine Learning",
-            # Simulate finding some resource files for the multimodal parser
-            "resource_files": ["lecture1.pptx", "book_chapter.pdf"]
-        }
+        # Add Stage 3
+        orchestrator.add_stage("Stage3_KnowledgeRefinementAndCourseConstruction", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate, "Refine knowledge points, add practical examples, and build a course sub-graph.")
+
+        initial_context = {"course_name": "Machine Learning", "resource_files": ["lecture1.pptx", "book_chapter.pdf"]}
         final_context = await orchestrator.run_pipeline(initial_context)
         
         print("\n--- Final Context ---")
