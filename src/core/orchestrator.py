@@ -94,61 +94,46 @@ class Orchestrator:
 # Example usage (for testing purposes)
 if __name__ == "__main__":
     import asyncio
-
-    class DemandAnalysisAgent(BaseAgent):
-        def __init__(self):
-            super().__init__("DemandAnalysisAgent", "Analyzes user requirements.")
-
-        async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-            self._log("Starting demand analysis...")
-            # Simulate LLM call
-            response = self.llm_service.generate_text("Generate a demand analysis for building a KG for Machine Learning course.")
-            context["demand_analysis_report"] = response
-            self._log("Demand analysis completed.")
-            return context
-
-    class SubjectOverviewAgent(BaseAgent):
-        def __init__(self):
-            super().__init__("SubjectOverviewAgent", "Creates overall subject plan.")
-
-        async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-            self._log("Starting subject overview planning...")
-            demand_report = context.get("demand_analysis_report", "No demand report found.")
-            # Simulate LLM call
-            response = self.llm_service.generate_text(f"Based on this demand: {demand_report[:200]}, create a subject overview plan.")
-            context["subject_overview_plan"] = response
-            self._log("Subject overview planning completed.")
-            return context
-
-    class ValidationCoordinatorAgent(BaseAgent):
-        def __init__(self):
-            super().__init__("ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
-
-        async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-            self._log("Validation coordinator is active.")
-            # This agent might not have a direct 'execute' in every stage,
-            # but its methods might be used by gate functions.
-            return context
+    from src.agents.demand_analysis_agent import DemandAnalysisAgent
+    from src.agents.subject_overview_agent import SubjectOverviewAgent
+    from src.agents.validation_coordinator_agent import ValidationCoordinatorAgent
 
     async def demand_review_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Demand Review Meeting ---")
         print("Reviewing demand analysis report and subject overview plan...")
-        # In a real scenario, this would involve human input or more complex LLM evaluation
-        demand_report = context.get("demand_analysis_report", "")
+        
+        # Instantiate ValidationCoordinatorAgent for the gate review
+        validation_agent = ValidationCoordinatorAgent()
+
+        demand_report = context.get("demand_spec_doc", "")
         subject_plan = context.get("subject_overview_plan", "")
 
-        if "Machine Learning" in demand_report and "syllabus" in subject_plan:
+        # Use the validation agent to review the demand report
+        demand_review_passed = await validation_agent.review_document(
+            "Demand Specification Document",
+            demand_report,
+            "Ensure the document clearly defines project goals, scope, target audience, deliverables, and success metrics."
+        )
+
+        # Use the validation agent to review the subject plan
+        subject_plan_review_passed = await validation_agent.review_document(
+            "Subject Knowledge System Overall Plan",
+            subject_plan,
+            "Ensure the plan includes core course list, logical relationships, unified data specification, and task breakdown."
+        )
+
+        if demand_review_passed and subject_plan_review_passed:
             print("Gate: Demand and plan look good. APPROVED.")
             return True
         else:
-            print("Gate: Demand or plan missing key elements. REJECTED.")
+            print("Gate: Demand or plan missing key elements or failed review. REJECTED.")
             return False
 
     async def main():
         agent_manager = AgentManager()
-        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
-        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates overall subject plan.")
-        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
+        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements and clarifies project scope.")
+        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject knowledge system planning based on demand.")
+        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation, quality gates, and review meetings.")
 
         orchestrator = Orchestrator(agent_manager)
         orchestrator.add_stage(
