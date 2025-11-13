@@ -109,6 +109,8 @@ if __name__ == "__main__":
     from src.agents.theoretical_analysis_agent import TheoreticalAnalysisAgent
     from src.agents.practical_analysis_agent import PracticalAnalysisAgent
     from src.agents.kg_builder_agent import KgBuilderAgent
+    # Stage 5 Agents
+    from src.agents.report_generation_agent import ReportGenerationAgent
 
     async def demand_review_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Demand Review Meeting (Gate 1) ---")
@@ -156,8 +158,6 @@ if __name__ == "__main__":
     async def final_result_review_gate(context: Dict[str, Any]) -> bool:
         print("\n--- Simulating Final Result Review Meeting (Gate 4) ---")
         validation_agent = ValidationCoordinatorAgent()
-        # This gate simulates a final review by human experts.
-        # We'll use the validation agent to perform a final check.
         test_passed = await validation_agent.perform_integration_test(context)
         if test_passed:
             print("Gate 4: Final knowledge graph has passed integration testing. APPROVED for delivery.")
@@ -181,6 +181,7 @@ if __name__ == "__main__":
         agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.")
         agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.")
         agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.")
+        agent_manager.register_agent(ReportGenerationAgent, "ReportGenerationAgent", "Generates final reports from the knowledge graph.")
 
         orchestrator = Orchestrator(agent_manager)
         
@@ -189,13 +190,16 @@ if __name__ == "__main__":
         orchestrator.add_stage("Stage2_DataCollectionAndPreprocessing", ["ML_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate, "Collect and preprocess data into standardized knowledge point drafts.")
         orchestrator.add_stage("Stage3_KnowledgeRefinementAndCourseConstruction", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate, "Refine knowledge points, add practical examples, and build a course sub-graph.")
         orchestrator.add_stage("Stage4_KnowledgeGraphIntegrationAndValidation", [("KgBuilderAgent", "integrate_and_store"), ("ValidationCoordinatorAgent", "perform_integration_test")], final_result_review_gate, "Integrate sub-graphs into a unified knowledge graph and perform validation.")
+        orchestrator.add_stage("Stage5_ReportGenerationAndDelivery", ["ReportGenerationAgent"], None, "Generate and deliver the final report.")
 
         initial_context = {"course_name": "Machine Learning", "resource_files": ["lecture1.pptx", "book_chapter.pdf"]}
         final_context = await orchestrator.run_pipeline(initial_context)
         
         print("\n--- Final Context ---")
         for key, value in final_context.items():
-            if isinstance(value, list) and value:
+            if key == "final_report":
+                print(f"final_report:\n{value}")
+            elif isinstance(value, list) and value:
                 print(f"{key}: (list of {len(value)} items)")
             elif isinstance(value, dict) and value:
                  print(f"{key}: (dict with keys: {list(value.keys())})")
