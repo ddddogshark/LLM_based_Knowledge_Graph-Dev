@@ -1,11 +1,12 @@
 # src/agents/validation_coordinator_agent.py
 
+import json
 from src.agents.base_agent import BaseAgent
 from typing import Dict, Any
 
 class ValidationCoordinatorAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("ValidationCoordinatorAgent", "Coordinates validation, quality gates, and review meetings.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Validation coordinator is active. No direct execution for this agent in a stage, primarily used by gate functions.")

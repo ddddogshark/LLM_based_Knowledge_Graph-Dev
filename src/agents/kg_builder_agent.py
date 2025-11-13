@@ -5,8 +5,8 @@ from typing import Dict, Any, List
 import json
 
 class KgBuilderAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("KgBuilderAgent", "Builds and integrates knowledge graphs.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """

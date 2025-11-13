@@ -4,8 +4,8 @@ from src.agents.base_agent import BaseAgent
 from typing import Dict, Any
 
 class DemandAnalysisAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("DemandAnalysisAgent", "Analyzes user requirements and clarifies project scope.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Starting demand analysis...")

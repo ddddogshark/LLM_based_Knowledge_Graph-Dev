@@ -4,8 +4,8 @@ from src.agents.base_agent import BaseAgent
 from typing import Dict, Any
 
 class SubjectOverviewAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("SubjectOverviewAgent", "Creates an overall subject knowledge system planning based on demand.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Starting subject overview planning...")

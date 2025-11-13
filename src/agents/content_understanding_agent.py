@@ -4,8 +4,8 @@ from src.agents.base_agent import BaseAgent
 from typing import Dict, Any, List
 
 class ContentUnderstandingAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("ContentUnderstandingAgent", "Processes raw data into structured knowledge point drafts.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Starting content understanding and transformation...")

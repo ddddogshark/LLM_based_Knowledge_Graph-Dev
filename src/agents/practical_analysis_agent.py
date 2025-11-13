@@ -4,8 +4,8 @@ from src.agents.base_agent import BaseAgent
 from typing import Dict, Any, List
 
 class PracticalAnalysisAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("PracticalAnalysisAgent", "Finds practical examples and case studies for knowledge points.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Starting practical analysis of refined knowledge points...")

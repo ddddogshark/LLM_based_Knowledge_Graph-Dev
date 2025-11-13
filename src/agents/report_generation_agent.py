@@ -5,8 +5,8 @@ from typing import Dict, Any
 import json
 
 class ReportGenerationAgent(BaseAgent):
-    def __init__(self):
-        super().__init__("ReportGenerationAgent", "Generates final reports from the knowledge graph.")
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
 
     async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
         self._log("Starting final report generation...")
