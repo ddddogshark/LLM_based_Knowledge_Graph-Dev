@@ -29,7 +29,11 @@ class Neo4jDriver:
         with self._driver.session() as session:
             session.run(query, head=head, relation=relation, tail=tail)
 
-    def store_triplets(self, triplets: list[dict]):
+    def store_triplets(self, triplets: list[list]):
         for triplet in triplets:
-            self.store_triplet(triplet["head"], triplet["relation"], triplet["tail"])
+            if len(triplet) == 3:
+                head, relation, tail = triplet
+                self.store_triplet(head, relation, tail)
+            else:
+                print(f"Skipping invalid triplet: {triplet}")
         print(f"Stored {len(triplets)} triplets in Neo4j.")
