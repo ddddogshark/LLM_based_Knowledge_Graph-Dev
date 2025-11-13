@@ -85,7 +85,12 @@ class Orchestrator:
             method_to_call = getattr(agent, method_name)
             
             print(f"  Executing Agent: {agent.name}, Method: {method_name} ({agent.description})")
-            self.context = await method_to_call(self.context)
+            result = await method_to_call(self.context)
+            
+            # Only update context if the agent returns a dictionary
+            if isinstance(result, dict):
+                self.context = result
+            
             print(f"  Agent '{agent.name}' finished.")
 
     def get_pipeline_status(self):
