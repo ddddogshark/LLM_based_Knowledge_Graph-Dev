@@ -173,7 +173,7 @@ if __name__ == "__main__":
         agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
         agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.")
         agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
-        agent_manager.register_agent(lambda name, desc: CourseAgent(name, desc, "Machine Learning"), "ML_CourseAgent", "Provides resources for the Machine Learning course.")
+        agent_manager.register_agent(lambda name, description: CourseAgent(name, description, "Machine Learning"), "ML_CourseAgent", "Provides resources for the Machine Learning course.")
         agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.")
         agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.")
         agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.")
