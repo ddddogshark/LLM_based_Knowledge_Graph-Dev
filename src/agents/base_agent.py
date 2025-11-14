@@ -5,13 +5,14 @@ from src.services.llm_service import LLMService
 from src.database.neo4j_driver import Neo4jDriver
 from src.database.mysql_driver import MySQLDriver
 from src.database.redis_driver import RedisDriver
+from src.config import NEO4J_DATABASE # Import NEO4J_DATABASE
 
 class BaseAgent(ABC):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
         self.name = name
         self.description = description
         self.llm_service = LLMService(api_key=api_key, api_url=api_url)
-        self.neo4j_driver = Neo4jDriver()
+        self.neo4j_driver = Neo4jDriver(database=NEO4J_DATABASE) # Pass database to constructor
         self.mysql_driver = MySQLDriver()
         self.redis_driver = RedisDriver()
 
