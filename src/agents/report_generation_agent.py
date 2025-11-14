@@ -1,56 +1,58 @@
-# src/agents/report_generation_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any
 import json
+import os
 
 class ReportGenerationAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting final report generation...")
-        
-        integrated_triplets = context.get("integrated_triplets", [])
-        course_name = context.get("course_name", "the course")
-        
-        if not integrated_triplets:
-            self._log("No integrated triplets found to generate a report from.")
-            context["final_report"] = "No knowledge graph was generated."
-            return context
-            
-        self._log(f"Generating report for {len(integrated_triplets)} triplets.")
-        
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generates various reports (e.g., Markdown, mind maps, queryable databases) from the final knowledge graph.
+        """
+        final_knowledge_graph = initial_context.get("final_knowledge_graph", [])
+        course_name = initial_context.get("course_name", "a generic subject")
+
+        self._log(f"Generating final report for '{course_name}' from {len(final_knowledge_graph)} triplets.")
+
+        if not final_knowledge_graph:
+            self._log("No final knowledge graph to generate a report from.")
+            initial_context["final_report"] = "No knowledge graph data available for reporting."
+            initial_context["final_report_path"] = None
+            return initial_context
+
+        # Convert triplets to a readable string for the LLM
+        triplets_str = "\n".join([f"- ({t['head']}) -[{t['relation']}]-> ({t['tail']})" for t in final_knowledge_graph])
+
         prompt = f"""
-        You are a Report Generation Agent. Your task is to create a comprehensive summary report
-        in Markdown format based on the final, integrated knowledge graph for {course_name}.
+        As a Report Generation Specialist, your task is to create a comprehensive Markdown report summarizing the constructed knowledge graph for the course "{course_name}".
 
-        The report should include:
-        1.  **Title:** A clear title for the report.
-        2.  **Executive Summary:** A brief overview of the knowledge graph.
-        3.  **Key Concepts:** A list of the most important concepts (entities) found in the graph.
-        4.  **Key Relationships:** A summary of the main relationships discovered.
-        5.  **Sample Triplets:** A small sample of representative triplets from the graph.
-        6.  **Conclusion:** A concluding paragraph about the generated knowledge graph.
+        The knowledge graph consists of the following triplets:
+        ---
+        {triplets_str}
+        ---
 
-        Here is a sample of the knowledge graph triplets (Head, Relation, Tail):
-        (Showing first 30 triplets)
-        ---
-        {json.dumps(integrated_triplets[:30], indent=2)}
-        ---
-        
-        Generate the final report in Markdown format.
+        Your report should include:
+        1.  **Introduction:** Briefly describe the purpose of the knowledge graph.
+        2.  **Key Concepts and Relationships:** Highlight the most important entities and their connections.
+        3.  **Structure Overview:** Explain how the knowledge graph is organized.
+        4.  **Potential Applications:** Suggest how this knowledge graph can be used.
+        5.  **Summary of Triplet Count:** Mention the total number of triplets.
+
+        Format the output as a well-structured Markdown document.
         """
         
-        final_report = self.llm_service.generate_text(prompt, temperature=0.6)
-        
-        context["final_report"] = final_report
+        final_report = await self.llm_service.generate_text(prompt)
         self._log("Final report generated.")
         
-        # Optionally, save the report to a file
-        report_file_path = f"./{course_name.replace(' ', '_')}_KG_Report.md"
-        with open(report_file_path, "w", encoding="utf-8") as f:
+        # Save the report to a Markdown file
+        report_filename = f"{course_name.replace(' ', '_')}_KG_Report.md"
+        report_path = os.path.join(os.getcwd(), report_filename) # Save in current working directory
+        with open(report_path, "w", encoding="utf-8") as f:
             f.write(final_report)
-        self._log(f"Report saved to {report_file_path}")
-            
-        return context
+        self._log(f"Final report saved to: {report_path}")
+
+        initial_context["final_report"] = final_report
+        initial_context["final_report_path"] = report_path
+        return initial_context

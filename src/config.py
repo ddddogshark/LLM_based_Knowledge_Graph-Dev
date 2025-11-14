@@ -1,11 +1,15 @@
 # src/config.py
 
 import os
+from dotenv import load_dotenv
 
-# DeepSeek API Configuration
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "YOUR_DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = "https://aigc-api.hkust-gz.edu.cn/v1/chat/completions"
-DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "DeepSeek-R1-671B") # or "gpt-3.5-turbo", "gpt-4"
+load_dotenv()
+
+# LLM API Configuration (Generic for Qwen, DeepSeek, etc.)
+LLM_API_KEY = os.getenv("LLM_API_KEY", "YOUR_LLM_API_KEY")
+LLM_API_URL = os.getenv("LLM_API_URL", "https://aigc-api.hkust-gz.edu.cn/v1/chat/completions")
+LLM_MODEL = os.getenv("LLM_MODEL", "Qwen") # Default to Qwen as per user's example
+LLM_API_KEY_PREFIX = os.getenv("LLM_API_KEY_PREFIX", "") # Default to empty string for Qwen, "Bearer " for others if needed
 
 # Neo4j Database Configuration
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")

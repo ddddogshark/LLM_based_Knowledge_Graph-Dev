@@ -1,57 +1,47 @@
-# src/agents/practical_analysis_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any, List
+from src.utils.json_parser import extract_json_from_string # Import the utility
 
 class PracticalAnalysisAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting practical analysis of refined knowledge points...")
-        
-        refined_knowledge: List[Dict[str, str]] = context.get("refined_knowledge_points", [])
-        
-        if not refined_knowledge:
-            self._log("No refined knowledge points found for practical analysis.")
-            return context
-            
-        self._log(f"Analyzing {len(refined_knowledge)} refined knowledge points.")
-        
-        enriched_knowledge_points = []
-        for item in refined_knowledge:
-            refined_content = item.get("refined_content", "")
-            
-            self._log(f"Finding practical examples for knowledge point...")
-            
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Matches knowledge points with code examples or project practices.
+        """
+        theoretically_refined_knowledge_points = initial_context.get("theoretically_refined_knowledge_points", [])
+        course_name = initial_context.get("course_name", "a generic course")
+
+        self._log(f"Performing practical analysis for {len(theoretically_refined_knowledge_points)} knowledge points for '{course_name}'.")
+
+        if not theoretically_refined_knowledge_points:
+            self._log("No theoretically refined knowledge points to analyze practically.")
+            initial_context["practically_enhanced_knowledge_points"] = []
+            return initial_context
+
+        enhanced_knowledge_points = []
+        for kp in theoretically_refined_knowledge_points:
             prompt = f"""
-            You are a Practical Analysis Agent. Your task is to take a theoretically sound knowledge point
-            and enrich it with practical applications, such as code examples or real-world case studies.
+            As a Practical Application Expert for the course "{course_name}", provide a relevant code example or a small project idea for the following knowledge point.
+            Focus on demonstrating the practical application of the concept.
 
-            Your analysis should:
-            1.  **Identify Application Areas:** Where is this concept used in practice?
-            2.  **Provide Code Examples:** If applicable, provide a simple code snippet (e.g., in Python) that demonstrates the concept.
-            3.  **Describe a Case Study:** Briefly describe a real-world case study or project where this concept was applied.
+            Knowledge Point:
+            Title: {kp.get('title', 'N/A')}
+            Explanation: {kp.get('explanation', 'N/A')}
+            Keywords: {', '.join(kp.get('keywords', []))}
 
-            Refined Knowledge Point:
-            ---
-            {refined_content}
-            ---
-            
-            Generate the enriched knowledge point with practical examples.
+            Provide the enhanced knowledge point in the same JSON format (title, explanation, keywords) and add a new key "practical_example" with the code or project idea.
+            If no practical example is suitable, set "practical_example" to "N/A".
             """
-            
-            practical_enrichment = self.llm_service.generate_text(prompt, temperature=0.6)
-            
-            # Combine the refined content with the practical enrichment
-            item["enriched_content"] = f"{refined_content}\n\n--- Practical Application ---\n{practical_enrichment}"
-            item["status"] = "practically_analyzed"
-            enriched_knowledge_points.append(item)
-            
-        # Replace the refined knowledge with the enriched knowledge
-        context["enriched_knowledge_points"] = enriched_knowledge_points
-        context.pop("refined_knowledge_points", None)
-        
-        self._log(f"Completed practical analysis of {len(enriched_knowledge_points)} knowledge points.")
-        
-        return context
+            enhanced_kp_json_str = await self.llm_service.generate_text(prompt)
+            enhanced_kp = extract_json_from_string(enhanced_kp_json_str)
+            if enhanced_kp:
+                enhanced_knowledge_points.append(enhanced_kp)
+            else:
+                self._log(f"Error decoding JSON for enhanced knowledge point. Raw content: {enhanced_kp_json_str}. Keeping original.")
+                enhanced_knowledge_points.append(kp) # Keep original if parsing fails
+
+        self._log("Practical analysis completed.")
+        initial_context["practically_enhanced_knowledge_points"] = enhanced_knowledge_points
+        return initial_context

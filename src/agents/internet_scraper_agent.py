@@ -1,52 +1,29 @@
-# src/agents/internet_scraper_agent.py
-
-from src.agents.base_agent import BaseAgent
-from typing import Dict, Any
+from .base_agent import BaseAgent
+from typing import Dict, Any, List
 
 class InternetScraperAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting internet scraping...")
-        
-        # This agent simulates scraping web pages based on keywords.
-        # A real implementation would use a tool like google_web_search and then
-        # a web scraping library like BeautifulSoup or Scrapy.
-        
-        course_name = context.get("course_name", "Machine Learning")
-        
-        self._log(f"Simulating search and scraping for information on: {course_name}")
-        
-        # Simulate search results and scraped content
-        simulated_results = [
-            {
-                "link": f"https://en.wikipedia.org/wiki/{course_name.replace(' ', '_')}",
-                "snippet": f"Wikipedia's entry on {course_name}, covering its history, theory, and applications."
-            },
-            {
-                "link": f"https://www.coursera.org/learn/{course_name.lower().replace(' ', '-')}",
-                "snippet": f"A popular online course on {course_name} from a leading university."
-            },
-            {
-                "link": f"https://towardsdatascience.com/tagged/{course_name.lower().replace(' ', '-')}",
-                "snippet": f"A collection of articles and tutorials on {course_name} from Towards Data Science."
-            }
-        ]
-        
-        scraped_content = []
-        for result in simulated_results:
-            self._log(f"Simulating scraping content from: {result['link']}")
-            scraped_content.append({
-                "source": result['link'],
-                "content": f"[Simulated Content] {result['snippet']}"
-            })
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Scrapes external latest information based on keywords.
+        """
+        course_resources = initial_context.get("course_resources", {})
+        keywords = course_resources.get("keywords", [])
+        course_name = initial_context.get("course_name", "a generic course")
 
-        # Add the scraped content to the context
-        if "raw_data" not in context:
-            context["raw_data"] = []
-        context["raw_data"].extend(scraped_content)
+        self._log(f"Scraping internet for '{course_name}' using keywords: {keywords}")
+
+        scraped_content_list = []
+        if keywords:
+            for keyword in keywords:
+                scraped_content_list.append(f"Internet content related to '{keyword}' (simulated scraping).")
+        else:
+            scraped_content_list.append(f"No specific keywords provided for internet scraping for {course_name}.")
+
+        scraped_content = "\n".join(scraped_content_list)
         
-        self._log(f"Completed simulated scraping of {len(scraped_content)} web pages.")
-            
-        return context
+        self._log("Internet scraping completed (simulated).")
+        initial_context["internet_scraped_content"] = scraped_content
+        return initial_context

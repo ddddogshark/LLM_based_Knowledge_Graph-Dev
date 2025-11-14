@@ -1,107 +1,89 @@
-# src/agents/kg_builder_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any, List
-import json
+from src.utils.json_parser import extract_json_from_string # Import the utility
+
+BATCH_SIZE = 5 # Define a batch size for processing knowledge points
 
 class KgBuilderAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        This method is used in Stage 3 to create a course-level sub-graph.
-        It extracts triplets from enriched knowledge points.
+        Builds a sub-knowledge graph for a course by extracting triplets from knowledge points.
+        Processes knowledge points in batches to reduce API calls.
         """
-        self._log("Starting knowledge sub-graph construction (triplet extraction)...")
-        
-        enriched_knowledge: List[Dict[str, str]] = context.get("enriched_knowledge_points", [])
-        
-        if not enriched_knowledge:
-            self._log("No enriched knowledge points found to build the graph from.")
-            return context
-            
-        self._log(f"Processing {len(enriched_knowledge)} enriched knowledge points.")
-        
+        practically_enhanced_knowledge_points = initial_context.get("practically_enhanced_knowledge_points", [])
+        course_name = initial_context.get("course_name", "a generic course")
+
+        self._log(f"Building sub-knowledge graph for '{course_name}' from {len(practically_enhanced_knowledge_points)} knowledge points.")
+
+        if not practically_enhanced_knowledge_points:
+            self._log("No practically enhanced knowledge points to build sub-knowledge graph from.")
+            initial_context["subgraphs"] = {course_name: []}
+            return initial_context
+
         all_triplets = []
-        for item in enriched_knowledge:
-            enriched_content = item.get("enriched_content", "")
+        # Process knowledge points in batches
+        for i in range(0, len(practically_enhanced_knowledge_points), BATCH_SIZE):
+            batch = practically_enhanced_knowledge_points[i:i + BATCH_SIZE]
+            batch_text_to_structure = []
+            for kp in batch:
+                batch_text_to_structure.append(f"Title: {kp.get('title', '')}\nExplanation: {kp.get('explanation', '')}\nPractical Example: {kp.get('practical_example', '')}")
             
-            self._log(f"Extracting triplets from an enriched knowledge point...")
-            
+            combined_text = "\n\n---\n\n".join(batch_text_to_structure)
+
             prompt = f"""
-            You are a Knowledge Graph Builder Agent. Your task is to extract knowledge triplets (Head, Relation, Tail)
-            from the provided enriched knowledge point text.
+            Extract all possible knowledge triplets (subject, predicate, object) from the following texts.
+            Each text block is separated by '---'.
+            Represent each triplet as a dictionary with keys 'head', 'relation', and 'tail'.
+            Return a JSON array of these dictionaries, containing triplets from all provided texts.
 
-            Rules for extraction:
-            1.  **Entities (Head/Tail):** Should be specific concepts, terms, or entities.
-            2.  **Relations:** Should describe the relationship between the head and tail (e.g., "is_a", "part_of", "has_property", "used_for", "prerequisite_for").
-            3.  **Output Format:** Provide the output as a JSON list of lists, where each inner list is a triplet. Example: [["Machine Learning", "is_a", "Field of AI"], ["Transformer", "based_on", "Attention Mechanism"]]
+            Example:
+            Text: "Barack Obama was born in Hawaii. --- Joe Biden is the current president."
+            Output: [
+                {{"head": "Barack Obama", "relation": "born in", "tail": "Hawaii"}},
+                {{"head": "Joe Biden", "relation": "is", "tail": "current president"}}
+            ]
 
-            Enriched Knowledge Point:
-            ---
-            {enriched_content}
-            ---
-            
-            Extract all relevant triplets and provide them in the specified JSON format.
+            Texts:
+            {combined_text}
             """
-            
-            triplets_json_str = self.llm_service.generate_text(prompt, temperature=0.3)
-            
-            try:
-                start_index = triplets_json_str.find('[')
-                end_index = triplets_json_str.rfind(']') + 1
-                if start_index != -1 and end_index != -1:
-                    triplets_json_str = triplets_json_str[start_index:end_index]
-                    triplets = json.loads(triplets_json_str)
-                    if isinstance(triplets, list):
-                        all_triplets.extend(triplets)
-                        self._log(f"Extracted {len(triplets)} triplets.")
-                else:
-                    self._log("Warning: Could not find a JSON list in the LLM response.")
-
-            except json.JSONDecodeError as e:
-                self._log(f"Error decoding JSON from LLM response: {e}")
-                self._log(f"LLM Response was: {triplets_json_str}")
-
-        # Add the triplets to the context for the current course
-        course_name = context.get("course_name", "unknown_course")
-        if "subgraphs" not in context:
-            context["subgraphs"] = {}
-        context["subgraphs"][course_name] = all_triplets
+            self._log(f"Sending batch {i//BATCH_SIZE + 1} to LLM for triplet extraction.")
+            triplets_json_str = await self.llm_service.generate_text(prompt, temperature=0.3)
+            triplets = extract_json_from_string(triplets_json_str)
+            if isinstance(triplets, list):
+                all_triplets.extend(triplets)
+            else:
+                self._log(f"Warning: LLM returned non-list content for triplets in batch {i//BATCH_SIZE + 1}: {triplets_json_str}")
         
-        self._log(f"Completed sub-graph construction for {course_name} with {len(all_triplets)} triplets.")
+        self._log(f"Sub-knowledge graph built for '{course_name}' with {len(all_triplets)} triplets.")
         
-        return context
+        # Store subgraphs in context, keyed by course_name
+        subgraphs = initial_context.get("subgraphs", {})
+        subgraphs[course_name] = all_triplets
+        initial_context["subgraphs"] = subgraphs
+        return initial_context
 
-    async def integrate_and_store(self, context: Dict[str, Any]) -> Dict[str, Any]:
+    async def integrate_kps(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        This method is used in Stage 4 to integrate all sub-graphs and store them.
+        Integrates all reviewed course sub-graphs to build a complete subject knowledge graph.
+        This method would also store the integrated graph in a database (e.g., Neo4j).
         """
-        self._log("Starting knowledge graph integration and storage...")
-        subgraphs = context.get("subgraphs", {})
+        self._log("Integrating sub-knowledge graphs into a unified knowledge graph.")
+        all_subgraphs = initial_context.get("subgraphs", {})
         
-        if not subgraphs:
-            self._log("No sub-graphs found to integrate.")
-            return context
+        unified_triplets = []
+        for course, triplets in all_subgraphs.items():
+            unified_triplets.extend(triplets)
+        
+        # In a real scenario, this would involve more sophisticated integration logic
+        # (e.g., entity resolution, conflict resolution) and then storing in Neo4j.
+        self._log(f"Unified knowledge graph contains {len(unified_triplets)} triplets.")
+        
+        # Store in Neo4j
+        await self.neo4j_driver.store_triplets(unified_triplets)
+        self._log("Unified knowledge graph stored in Neo4j.")
 
-        # In a real multi-course scenario, this is where you would perform
-        # entity alignment, conflict resolution, etc., across the different sub-graphs.
-        # For now, we will just merge all triplets from all sub-graphs.
-        
-        integrated_triplets = []
-        for course_name, triplets in subgraphs.items():
-            self._log(f"Integrating {len(triplets)} triplets from course: {course_name}")
-            integrated_triplets.extend(triplets)
-            
-        self._log(f"Total of {len(integrated_triplets)} triplets integrated.")
-        
-        # Store the final, integrated triplets in Neo4j
-        if integrated_triplets:
-            self._log("Storing integrated triplets in Neo4j...")
-            self.neo4j_driver.store_triplets(integrated_triplets)
-            self._log("Finished storing triplets.")
-            
-        context["integrated_triplets"] = integrated_triplets
-        
-        return context
+        initial_context["final_knowledge_graph"] = unified_triplets
+        return initial_context

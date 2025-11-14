@@ -1,45 +1,51 @@
-# src/agents/course_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any, List
+from src.utils.json_parser import extract_json_from_string # Import the utility
 
 class CourseAgent(BaseAgent):
-    def __init__(self, name: str, description: str, course_name: str):
-        super().__init__(name, description)
-        self.course_name = course_name
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log(f"Starting task for course: {self.course_name}")
-        
-        # In Stage 2, this agent's role is to provide a list of core resources.
-        # This would be based on the task breakdown from the Subject Overview Plan.
-        subject_plan = context.get("subject_overview_plan", "")
-        
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Provides core resource lists (specified textbooks, keywords, etc.) for its course.
+        """
+        course_name = initial_context.get("course_name", "a generic course")
+        self._log(f"Providing core resources for course: {course_name}")
+
         prompt = f"""
-        You are a Course-Specific Agent for "{self.course_name}".
-        Based on the overall Subject Knowledge System Plan, your task is to provide a list of core resources
-        for your course. This includes:
-        1.  **Core Keywords:** A list of essential keywords for searching academic papers and web resources.
-        2.  **Recommended Textbooks:** A list of recommended textbooks (if any).
-        3.  **Key Online Resources:** A list of important websites, lecture series, or open-source projects.
+        As an expert in curriculum design, provide a list of core resources for the course "{course_name}".
+        This should include:
+        -   Key textbooks (title, author, year if possible)
+        -   Important keywords for web scraping
+        -   Relevant academic fields or sub-topics for academic paper scraping
 
-        Here is the Subject Knowledge System Overall Plan:
-        ---
-        {subject_plan}
-        ---
-        
-        Generate the resource list for "{self.course_name}".
+        Format the output as a JSON object with keys "textbooks", "keywords", and "academic_fields", where values are lists of strings.
+        Example:
+        {{
+            "textbooks": ["Deep Learning by Goodfellow et al."],
+            "keywords": ["neural networks", "deep learning", "machine learning"],
+            "academic_fields": ["Computer Science", "Artificial Intelligence"]
+        }}
         """
         
-        resource_list_str = self.llm_service.generate_text(prompt, temperature=0.5)
+        resources_json_str = await self.llm_service.generate_text(prompt)
+        self._log("Core resources generated.")
         
-        # Initialize course-specific context if it doesn't exist
-        if "courses" not in context:
-            context["courses"] = {}
-        if self.course_name not in context["courses"]:
-            context["courses"][self.course_name] = {}
-            
-        context["courses"][self.course_name]["resource_list"] = resource_list_str
-        self._log(f"Generated resource list for {self.course_name}.")
+        resources = extract_json_from_string(resources_json_str)
+        if resources:
+            initial_context["course_resources"] = resources
+        else:
+            self._log(f"Error decoding JSON for course resources. Raw content: {resources_json_str}")
+            initial_context["course_resources"] = {"textbooks": [], "keywords": [course_name], "academic_fields": []}
         
-        return context
+        return initial_context
+
+    async def review_knowledge_points(self, knowledge_points: List[Dict[str, Any]]) -> bool:
+        """
+        Reviews the quality and relevance of knowledge points for the course.
+        """
+        self._log(f"Reviewing {len(knowledge_points)} knowledge points.")
+        # In a real scenario, this would involve LLM-based review or specific checks.
+        # For now, simulate a positive review if there are knowledge points.
+        return len(knowledge_points) > 0

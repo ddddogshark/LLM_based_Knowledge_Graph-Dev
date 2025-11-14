@@ -7,10 +7,10 @@ from src.database.mysql_driver import MySQLDriver
 from src.database.redis_driver import RedisDriver
 
 class BaseAgent(ABC):
-    def __init__(self, name: str, description: str):
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
         self.name = name
         self.description = description
-        self.llm_service = LLMService()
+        self.llm_service = LLMService(api_key=api_key, api_url=api_url)
         self.neo4j_driver = Neo4jDriver()
         self.mysql_driver = MySQLDriver()
         self.redis_driver = RedisDriver()

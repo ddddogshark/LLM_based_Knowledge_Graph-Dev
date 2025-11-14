@@ -1,35 +1,36 @@
-# src/agents/subject_overview_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any
 
 class SubjectOverviewAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting subject overview planning...")
-        demand_spec_doc = context.get("demand_spec_doc", "No demand specification document found.")
-        course_name = context.get("course_name", "a specified course")
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Formulates an overall plan for subject knowledge system construction.
+        """
+        demand_spec_doc = initial_context.get("demand_spec_doc", "No demand specification document provided.")
+        course_name = initial_context.get("course_name", "a generic subject")
+        self._log(f"Formulating subject overview plan for '{course_name}' based on demand specification.")
 
         prompt = f"""
-        You are a Subject Overview Agent. Your task is to act as a "Chief Architect" and create a comprehensive
-        "Subject Knowledge System Overall Plan" based on the provided Demand Specification Document for the course "{course_name}".
-
-        The plan should include:
-        1.  **Core Course List:** Identify the main courses/modules within "{course_name}" (even if it's just one, detail its sub-modules).
-        2.  **Logical Relationships between Courses/Modules:** Describe how these courses/modules connect.
-        3.  **Unified Data Specification:** Propose a high-level data model or schema for the knowledge graph, including entity types, relationship types, and key attributes.
-        4.  **Task Breakdown for Course-Specific Agents:** Outline initial tasks for hypothetical course-specific agents for each core course/module identified.
-
-        Here is the Demand Specification Document:
+        As a Chief Architect for a knowledge system, your task is to formulate an overall plan for subject knowledge system construction.
+        The demand specification document is as follows:
         ---
         {demand_spec_doc}
         ---
+
+        Based on this, please generate a comprehensive plan that includes:
+        1.  **Core Course List:** A list of essential courses or major topics.
+        2.  **Logical Relationships:** How these courses/topics relate to each other (e.g., prerequisites, dependencies).
+        3.  **Unified Data Specifications:** High-level guidelines for data consistency and format across the knowledge graph.
+        4.  **Task Breakdown:** How the overall task of building the knowledge graph for "{course_name}" will be broken down into manageable parts.
+
+        Format the output as a Markdown document.
         """
         
-        subject_plan = self.llm_service.generate_text(prompt, temperature=0.7)
+        subject_overview_plan = await self.llm_service.generate_text(prompt)
+        self._log("Subject overview plan generated.")
         
-        context["subject_overview_plan"] = subject_plan
-        self._log("Subject overview planning completed. Subject Knowledge System Overall Plan generated.")
-        return context
+        initial_context["subject_overview_plan"] = subject_overview_plan
+        return initial_context

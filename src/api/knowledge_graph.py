@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, BackgroundTasks
 from typing import Dict, Any
+import uuid
 
 # Import the main components of the new architecture
 from src.core.agent_manager import AgentManager
@@ -18,6 +19,10 @@ from src.agents.theoretical_analysis_agent import TheoreticalAnalysisAgent
 from src.agents.practical_analysis_agent import PracticalAnalysisAgent
 from src.agents.kg_builder_agent import KgBuilderAgent
 from src.agents.report_generation_agent import ReportGenerationAgent
+from src.agents.knowledge_generation_agent import KnowledgeGenerationAgent # Added
+from src.agents.knowledge_structuring_agent import KnowledgeStructuringAgent # Added
+
+from src.config import DEEPSEEK_API_KEY, DEEPSEEK_API_URL # Import API credentials
 
 router = APIRouter()
 
@@ -32,18 +37,20 @@ async def run_pipeline_background(course_name: str, task_id: str):
         agent_manager = AgentManager()
         
         # Register Agents
-        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
-        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.")
-        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
-        agent_manager.register_agent(lambda name, description: CourseAgent(name, description, course_name), f"{course_name}_CourseAgent", f"Provides resources for the {course_name} course.")
-        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.")
-        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.")
-        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.")
-        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.")
-        agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.")
-        agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.")
-        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.")
-        agent_manager.register_agent(ReportGenerationAgent, "ReportGenerationAgent", "Generates final reports from the knowledge graph.")
+        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(CourseAgent, f"{course_name}_CourseAgent", f"Provides resources for the {course_name} course.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(ReportGenerationAgent, "ReportGenerationAgent", "Generates final reports from the knowledge graph.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL)
+        agent_manager.register_agent(KnowledgeGenerationAgent, "KnowledgeGenerationAgent", "Generates detailed knowledge for topics.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL) # Added
+        agent_manager.register_agent(KnowledgeStructuringAgent, "KnowledgeStructuringAgent", "Extracts structured knowledge triplets.", api_key=DEEPSEEK_API_KEY, api_url=DEEPSEEK_API_URL) # Added
 
         orchestrator = Orchestrator(agent_manager)
         
@@ -51,25 +58,28 @@ async def run_pipeline_background(course_name: str, task_id: str):
         async def demand_review_gate(context: Dict[str, Any], am: AgentManager) -> bool:
             validation_agent = am.get_agent("ValidationCoordinatorAgent")
             # Simplified logic for brevity in API
-            return await validation_agent.review_document("Demand Specification Document", context.get("demand_spec_doc", ""), "Ensure goals and scope are defined.")
+            return await validation_agent.organize_review("Demand Specification Document Review", context.get("demand_spec_doc", ""))
 
         async def data_acceptance_gate(context: Dict[str, Any], am: AgentManager) -> bool:
             validation_agent = am.get_agent("ValidationCoordinatorAgent")
-            return len(context.get("knowledge_point_drafts", [])) > 0
+            # Simplified logic for brevity in API
+            return await validation_agent.organize_review("Data Acceptance Review", context.get("knowledge_point_drafts", []))
 
         async def subject_level_review_gate(context: Dict[str, Any], am: AgentManager) -> bool:
-            return len(context.get("subgraphs", {}).get(course_name, [])) > 0
+            validation_agent = am.get_agent("ValidationCoordinatorAgent")
+            # Simplified logic for brevity in API
+            return await validation_agent.organize_review("Subject Level Review", context.get("subgraphs", {}).get(course_name, []))
 
         async def final_result_review_gate(context: Dict[str, Any], am: AgentManager) -> bool:
             validation_agent = am.get_agent("ValidationCoordinatorAgent")
-            return await validation_agent.perform_integration_test(context)
+            return await validation_agent.organize_integration_test(context)
 
         # Add Stages
-        orchestrator.add_stage("Stage1", ["DemandAnalysisAgent", "SubjectOverviewAgent"], demand_review_gate)
-        orchestrator.add_stage("Stage2", [f"{course_name}_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate)
-        orchestrator.add_stage("Stage3", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate)
-        orchestrator.add_stage("Stage4", [("KgBuilderAgent", "integrate_and_store"), ("ValidationCoordinatorAgent", "perform_integration_test")], final_result_review_gate)
-        orchestrator.add_stage("Stage5", ["ReportGenerationAgent"], None)
+        orchestrator.add_stage("Stage1_DemandAnalysisAndPlanning", ["DemandAnalysisAgent", "SubjectOverviewAgent"], demand_review_gate, "Analyze user requirements and create an overall subject plan.")
+        orchestrator.add_stage("Stage2_DataCollectionAndPreprocessing", [f"{course_name}_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate, "Collect and preprocess data into standardized knowledge point drafts.")
+        orchestrator.add_stage("Stage3_KnowledgeRefinementAndCourseConstruction", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate, "Refine knowledge points, add practical examples, and build a course sub-graph.")
+        orchestrator.add_stage("Stage4_KnowledgeGraphIntegrationAndValidation", [("KgBuilderAgent", "integrate_kps"), ("ValidationCoordinatorAgent", "organize_integration_test")], final_result_review_gate, "Integrate sub-graphs into a unified knowledge graph and perform validation.")
+        orchestrator.add_stage("Stage5_ReportGenerationAndDelivery", ["ReportGenerationAgent"], None, "Generate and deliver the final report.")
 
         initial_context = {"course_name": course_name, "resource_files": []} # No files for now
         
@@ -92,7 +102,6 @@ async def build_knowledge_graph(course_name: str, background_tasks: BackgroundTa
     """
     Triggers the asynchronous pipeline to build a knowledge graph for the specified course.
     """
-    import uuid
     task_id = str(uuid.uuid4())
     background_tasks.add_task(run_pipeline_background, course_name, task_id)
     pipeline_tasks[task_id] = {"status": "starting", "result": None}

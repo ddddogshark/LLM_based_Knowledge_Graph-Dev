@@ -1,27 +1,16 @@
-import os
-import requests
 import json
-from dotenv import load_dotenv
+from .base_agent import BaseAgent
 
-load_dotenv()
+class PlannerAgent(BaseAgent):
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_API_URL = os.getenv("DEEPSEEK_API_URL")
-
-def plan_course_kg_construction(course_name: str) -> list[str]:
-    """
-    Generates a plan for constructing the knowledge graph for a given course by calling an LLM.
-    """
-    if not DEEPSEEK_API_KEY or not DEEPSEEK_API_URL:
-        print("DeepSeek API key or URL not configured.")
-        return [f"Error: API credentials not configured."]
-
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"{DEEPSEEK_API_KEY}",
-    }
-
-    prompt = f"""
+    async def execute(self, course_name: str) -> list[str]:
+        """
+        Generates a plan for constructing the knowledge graph for a given course by calling an LLM.
+        """
+        self._log(f"Generating plan for course: {course_name}")
+        prompt = f"""
     As an expert curriculum designer, create a detailed syllabus or topic outline for the course "{course_name}".
     The outline should consist of a list of key concepts, topics, and sub-topics that are essential for understanding the subject.
     Return the output as a JSON formatted list of strings.
@@ -39,39 +28,28 @@ def plan_course_kg_construction(course_name: str) -> list[str]:
 
     Course: "{course_name}"
     """
-
-    data = {
-        "model": "Qwen",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.5,
-    }
-
-    try:
-        response = requests.post(DEEPSEEK_API_URL, headers=headers, data=json.dumps(data))
-        response.raise_for_status()
-        response_json = response.json()
-        content = response_json.get("choices", [{}])[0].get("message", {}).get("content", "[]")
+        content = await self.llm_service.generate_text(prompt, temperature=0.5)
         
-        # Clean the content to extract only the JSON list
+        if "Error" in content:
+            self._log(f"Error generating plan: {content}")
+            return [f"Error: {content}"]
+
         try:
-            # Find the start and end of the JSON list
+            # Clean the content to extract only the JSON list
             start_index = content.find('[')
             end_index = content.rfind(']') + 1
             if start_index != -1 and end_index != 0:
                 json_str = content[start_index:end_index]
                 plan = json.loads(json_str)
                 if isinstance(plan, list):
+                    self._log(f"Successfully generated plan with {len(plan)} topics.")
                     return plan
                 else:
-                    print(f"Warning: LLM returned a non-list JSON object: {plan}")
+                    self._log(f"Warning: LLM returned a non-list JSON object: {plan}")
                     return [f"Error: LLM returned a non-list object."]
             else:
-                print(f"Warning: Could not find a JSON list in the LLM response: {content}")
+                self._log(f"Warning: Could not find a JSON list in the LLM response: {content}")
                 return [f"Error: No JSON list found in response."]
         except json.JSONDecodeError:
-            print(f"Error decoding JSON from LLM response. Raw content: {content}")
+            self._log(f"Error decoding JSON from LLM response. Raw content: {content}")
             return [f"Error: Failed to decode JSON from LLM."]
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error calling DeepSeek API for planning: {e}")
-        return [f"Error: API call failed."]

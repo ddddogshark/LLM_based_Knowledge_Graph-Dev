@@ -7,13 +7,13 @@ class AgentManager:
     def __init__(self):
         self._agents: Dict[str, BaseAgent] = {}
 
-    def register_agent(self, agent_class: Type[BaseAgent], name: str, description: str):
+    def register_agent(self, agent_class: Type[BaseAgent], name: str, description: str, api_key: str = None, api_url: str = None):
         """
-        Registers an agent class and creates an instance of it.
+        Registers an agent class and creates an instance of it, passing API configuration.
         """
         if name in self._agents:
             raise ValueError(f"Agent with name '{name}' already registered.")
-        self._agents[name] = agent_class(name=name, description=description)
+        self._agents[name] = agent_class(name=name, description=description, api_key=api_key, api_url=api_url)
         print(f"Agent '{name}' registered.")
 
     def get_agent(self, name: str) -> BaseAgent:

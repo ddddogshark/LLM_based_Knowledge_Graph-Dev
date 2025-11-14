@@ -100,6 +100,7 @@ class Orchestrator:
 if __name__ == "__main__":
     import asyncio
     import json
+    from src.config import LLM_API_KEY, LLM_API_URL # Import API credentials
     # Stage 1 Agents
     from src.agents.demand_analysis_agent import DemandAnalysisAgent
     from src.agents.subject_overview_agent import SubjectOverviewAgent
@@ -110,6 +111,8 @@ if __name__ == "__main__":
     from src.agents.internet_scraper_agent import InternetScraperAgent
     from src.agents.academic_scraper_agent import AcademicScraperAgent
     from src.agents.content_understanding_agent import ContentUnderstandingAgent
+    from src.agents.knowledge_generation_agent import KnowledgeGenerationAgent # Added
+    from src.agents.knowledge_structuring_agent import KnowledgeStructuringAgent # Added
     # Stage 3 Agents
     from src.agents.theoretical_analysis_agent import TheoreticalAnalysisAgent
     from src.agents.practical_analysis_agent import PracticalAnalysisAgent
@@ -122,8 +125,8 @@ if __name__ == "__main__":
         validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
         demand_report = context.get("demand_spec_doc", "")
         subject_plan = context.get("subject_overview_plan", "")
-        demand_review_passed = await validation_agent.review_document("Demand Specification Document", demand_report, "Ensure the document clearly defines project goals, scope, and success metrics.")
-        subject_plan_review_passed = await validation_agent.review_document("Subject Knowledge System Overall Plan", subject_plan, "Ensure the plan includes core course list, logical relationships, and task breakdown.")
+        demand_review_passed = await validation_agent.organize_review("Demand Specification Document Review", demand_report)
+        subject_plan_review_passed = await validation_agent.organize_review("Subject Knowledge System Overall Plan Review", subject_plan)
         if demand_review_passed and subject_plan_review_passed:
             print("Gate 1: Demand and plan look good. APPROVED.")
             return True
@@ -137,8 +140,8 @@ if __name__ == "__main__":
         if not drafts:
             print("Gate 2: No knowledge point drafts were generated. REJECTED.")
             return False
-        sample_draft = drafts[0]['draft']
-        review_passed = await validation_agent.review_document("Knowledge Point Draft Sample", sample_draft, "Ensure the draft is a concise summary of key information.")
+        sample_draft = drafts[0]['explanation'] # Changed from 'draft' to 'explanation'
+        review_passed = await validation_agent.organize_review("Knowledge Point Draft Sample Review", sample_draft)
         if review_passed:
             print("Gate 2: Knowledge point drafts seem to be of good quality. APPROVED.")
             return True
@@ -147,23 +150,25 @@ if __name__ == "__main__":
 
     async def subject_level_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Subject-Level Review Meeting (Gate 3) ---")
+        validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
         subgraphs = context.get("subgraphs", {})
         if not subgraphs or not any(subgraphs.values()):
             print("Gate 3: No knowledge triplets were generated for the sub-graph. REJECTED.")
             return False
         
         triplet_count = sum(len(triplets) for triplets in subgraphs.values())
-        if triplet_count > 5:
+        review_passed = await validation_agent.organize_review("Subject Level Sub-graph Review", subgraphs)
+        if triplet_count > 5 and review_passed:
             print(f"Gate 3: Sub-graph with {triplet_count} triplets looks reasonable. APPROVED.")
             return True
         else:
-            print(f"Gate 3: Only {triplet_count} triplets were generated. This seems too low. REJECTED.")
+            print(f"Gate 3: Only {triplet_count} triplets were generated or review failed. REJECTED.")
             return False
 
     async def final_result_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Final Result Review Meeting (Gate 4) ---")
         validation_agent = agent_manager.get_agent("ValidationCoordinatorAgent")
-        test_passed = await validation_agent.perform_integration_test(context)
+        test_passed = await validation_agent.organize_integration_test(context)
         if test_passed:
             print("Gate 4: Final knowledge graph has passed integration testing. APPROVED for delivery.")
             return True
@@ -175,18 +180,20 @@ if __name__ == "__main__":
         agent_manager = AgentManager()
         
         # Register Agents
-        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.")
-        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.")
-        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.")
-        agent_manager.register_agent(lambda name, description: CourseAgent(name, description, "Machine Learning"), "ML_CourseAgent", "Provides resources for the Machine Learning course.")
-        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.")
-        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.")
-        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.")
-        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.")
-        agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.")
-        agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.")
-        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.")
-        agent_manager.register_agent(ReportGenerationAgent, "ReportGenerationAgent", "Generates final reports from the knowledge graph.")
+        agent_manager.register_agent(DemandAnalysisAgent, "DemandAnalysisAgent", "Analyzes user requirements.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(SubjectOverviewAgent, "SubjectOverviewAgent", "Creates an overall subject plan.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(ValidationCoordinatorAgent, "ValidationCoordinatorAgent", "Coordinates validation and quality gates.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(CourseAgent, "ML_CourseAgent", "Provides resources for the Machine Learning course.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(MultimodalParserAgent, "MultimodalParserAgent", "Parses various file formats.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(InternetScraperAgent, "InternetScraperAgent", "Scrapes web pages.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(AcademicScraperAgent, "AcademicScraperAgent", "Scrapes academic papers.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(ContentUnderstandingAgent, "ContentUnderstandingAgent", "Processes raw data into drafts.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(TheoreticalAnalysisAgent, "TheoreticalAnalysisAgent", "Ensures theoretical rigor of knowledge points.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(PracticalAnalysisAgent, "PracticalAnalysisAgent", "Finds practical examples for knowledge points.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(KgBuilderAgent, "KgBuilderAgent", "Builds and integrates knowledge graphs.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(ReportGenerationAgent, "ReportGenerationAgent", "Generates final reports from the knowledge graph.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(KnowledgeGenerationAgent, "KnowledgeGenerationAgent", "Generates detailed knowledge for topics.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
+        agent_manager.register_agent(KnowledgeStructuringAgent, "KnowledgeStructuringAgent", "Extracts structured knowledge triplets.", api_key=LLM_API_KEY, api_url=LLM_API_URL)
 
         orchestrator = Orchestrator(agent_manager)
         
@@ -194,7 +201,7 @@ if __name__ == "__main__":
         orchestrator.add_stage("Stage1_DemandAnalysisAndPlanning", ["DemandAnalysisAgent", "SubjectOverviewAgent"], demand_review_gate, "Analyze user requirements and create an overall subject plan.")
         orchestrator.add_stage("Stage2_DataCollectionAndPreprocessing", ["ML_CourseAgent", "MultimodalParserAgent", "InternetScraperAgent", "AcademicScraperAgent", "ContentUnderstandingAgent"], data_acceptance_gate, "Collect and preprocess data into standardized knowledge point drafts.")
         orchestrator.add_stage("Stage3_KnowledgeRefinementAndCourseConstruction", ["TheoreticalAnalysisAgent", "PracticalAnalysisAgent", "KgBuilderAgent"], subject_level_review_gate, "Refine knowledge points, add practical examples, and build a course sub-graph.")
-        orchestrator.add_stage("Stage4_KnowledgeGraphIntegrationAndValidation", [("KgBuilderAgent", "integrate_and_store"), ("ValidationCoordinatorAgent", "perform_integration_test")], final_result_review_gate, "Integrate sub-graphs into a unified knowledge graph and perform validation.")
+        orchestrator.add_stage("Stage4_KnowledgeGraphIntegrationAndValidation", [("KgBuilderAgent", "integrate_kps"), ("ValidationCoordinatorAgent", "organize_integration_test")], final_result_review_gate, "Integrate sub-graphs into a unified knowledge graph and perform validation.")
         orchestrator.add_stage("Stage5_ReportGenerationAndDelivery", ["ReportGenerationAgent"], None, "Generate and deliver the final report.")
 
         initial_context = {"course_name": "Machine Learning", "resource_files": ["lecture1.pptx", "book_chapter.pdf"]}

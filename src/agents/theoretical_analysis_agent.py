@@ -1,59 +1,46 @@
-# src/agents/theoretical_analysis_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any, List
+from src.utils.json_parser import extract_json_from_string # Import the utility
 
 class TheoreticalAnalysisAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting theoretical analysis of knowledge point drafts...")
-        
-        drafts: List[Dict[str, str]] = context.get("knowledge_point_drafts", [])
-        
-        if not drafts:
-            self._log("No knowledge point drafts found for theoretical analysis.")
-            return context
-            
-        self._log(f"Analyzing {len(drafts)} knowledge point drafts.")
-        
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ensures theoretical rigor and coherence of knowledge points.
+        """
+        knowledge_point_drafts = initial_context.get("knowledge_point_drafts", [])
+        course_name = initial_context.get("course_name", "a generic course")
+
+        self._log(f"Performing theoretical analysis for {len(knowledge_point_drafts)} knowledge points for '{course_name}'.")
+
+        if not knowledge_point_drafts:
+            self._log("No knowledge point drafts to analyze theoretically.")
+            initial_context["theoretically_refined_knowledge_points"] = []
+            return initial_context
+
         refined_knowledge_points = []
-        for item in drafts:
-            source = item.get("source", "Unknown source")
-            draft_content = item.get("draft", "")
-            
-            self._log(f"Analyzing draft from: {source}")
-            
+        for kp in knowledge_point_drafts:
             prompt = f"""
-            You are a Theoretical Analysis Agent. Your task is to analyze the following Knowledge Point Draft
-            and refine it to ensure theoretical rigor and coherence.
-
-            Your analysis should:
-            1.  **Verify Correctness:** Check the factual accuracy of the statements.
-            2.  **Ensure Coherence:** Make sure the concepts are presented in a logical and coherent manner.
-            3.  **Add Theoretical Context:** Place the knowledge point within a broader theoretical framework. For example, mention the school of thought it belongs to, or the fundamental principles it's based on.
-            4.  **Identify Relationships:** Explicitly state its relationship to other potential concepts (e.g., "this is a specific application of [broader concept]", "this is a prerequisite for [advanced concept]").
-
-            Knowledge Point Draft:
-            ---
-            {draft_content}
-            ---
+            As a Theoretical Analyst for the course "{course_name}", review the following knowledge point for theoretical rigor, coherence, and completeness.
+            Suggest any improvements, identify potential gaps, or rephrase for better clarity and academic accuracy.
             
-            Generate the refined, theoretically sound knowledge point.
+            Knowledge Point:
+            Title: {kp.get('title', 'N/A')}
+            Explanation: {kp.get('explanation', 'N/A')}
+            Keywords: {', '.join(kp.get('keywords', []))}
+
+            Provide the refined knowledge point in the same JSON format (title, explanation, keywords).
             """
-            
-            refined_content = self.llm_service.generate_text(prompt, temperature=0.5)
-            refined_knowledge_points.append({
-                "source": source,
-                "refined_content": refined_content,
-                "status": "theoretically_analyzed"
-            })
-            
-        # Replace the old drafts with the refined knowledge points
-        context["refined_knowledge_points"] = refined_knowledge_points
-        context.pop("knowledge_point_drafts", None) # Remove the old drafts
-        
-        self._log(f"Completed theoretical analysis of {len(refined_knowledge_points)} knowledge points.")
-        
-        return context
+            refined_kp_json_str = await self.llm_service.generate_text(prompt)
+            refined_kp = extract_json_from_string(refined_kp_json_str)
+            if refined_kp:
+                refined_knowledge_points.append(refined_kp)
+            else:
+                self._log(f"Error decoding JSON for refined knowledge point. Raw content: {refined_kp_json_str}. Keeping original.")
+                refined_knowledge_points.append(kp) # Keep original if parsing fails
+
+        self._log("Theoretical analysis completed.")
+        initial_context["theoretically_refined_knowledge_points"] = refined_knowledge_points
+        return initial_context

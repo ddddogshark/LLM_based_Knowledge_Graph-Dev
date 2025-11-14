@@ -1,59 +1,58 @@
-# src/agents/content_understanding_agent.py
-
-from src.agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from typing import Dict, Any, List
+from src.utils.json_parser import extract_json_from_string # Import the utility
 
 class ContentUnderstandingAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting content understanding and transformation...")
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Receives all raw data, performs deep understanding, summarization, and extraction,
+        and outputs structured knowledge point drafts.
+        """
+        multimodal_content = initial_context.get("multimodal_parsed_content", "")
+        internet_content = initial_context.get("internet_scraped_content", "")
+        academic_content = initial_context.get("academic_scraped_content", "")
+        course_name = initial_context.get("course_name", "a generic course")
+
+        self._log(f"Understanding content for '{course_name}'. Combining data from multiple sources.")
+
+        combined_raw_data = f"Multimodal Content:\n{multimodal_content}\n\nInternet Content:\n{internet_content}\n\nAcademic Content:\n{academic_content}"
+
+        prompt = f"""
+        As a Knowledge Engineer, your task is to perform deep understanding, summarization, and extraction of key knowledge points from the following raw data.
+        The goal is to create structured knowledge point drafts for the course "{course_name}".
+
+        Raw Data:
+        ---
+        {combined_raw_data}
+        ---
+
+        Please extract key knowledge points. For each knowledge point, provide:
+        -   A concise title/concept.
+        -   A brief explanation.
+        -   Relevant keywords.
+
+        Format the output as a JSON array of objects, where each object represents a knowledge point.
+        Example:
+        [
+            {{
+                "title": "Supervised Learning",
+                "explanation": "A type of machine learning where a model learns from labeled training data.",
+                "keywords": ["machine learning", "labeled data", "classification", "regression"]
+            }}
+        ]
+        """
         
-        raw_data: List[Dict[str, str]] = context.get("raw_data", [])
+        knowledge_point_drafts_json_str = await self.llm_service.generate_text(prompt)
+        self._log("Knowledge point drafts generated.")
         
-        if not raw_data:
-            self._log("No raw data found to process.")
-            return context
-            
-        self._log(f"Processing {len(raw_data)} raw data items.")
+        knowledge_point_drafts = extract_json_from_string(knowledge_point_drafts_json_str)
+        if isinstance(knowledge_point_drafts, list):
+            initial_context["knowledge_point_drafts"] = knowledge_point_drafts
+        else:
+            self._log(f"Error decoding JSON for knowledge point drafts. Raw content: {knowledge_point_drafts_json_str}")
+            initial_context["knowledge_point_drafts"] = []
         
-        knowledge_point_drafts = []
-        for item in raw_data:
-            source = item.get("source", "Unknown source")
-            content = item.get("content", "")
-            
-            self._log(f"Processing content from: {source}")
-            
-            prompt = f"""
-            You are a Content Understanding Agent. Your task is to process the following raw text and
-            transform it into a structured "Knowledge Point Draft".
-            
-            The draft should be a concise summary of the key information in the text.
-            It should identify the main concept, its definition, and any key relationships or properties.
-            
-            Raw Text from {source}:
-            ---
-            {content}
-            ---
-            
-            Generate the Knowledge Point Draft.
-            """
-            
-            draft = self.llm_service.generate_text(prompt, temperature=0.5)
-            knowledge_point_drafts.append({
-                "source": source,
-                "draft": draft
-            })
-            
-        # Add the drafts to the context
-        if "knowledge_point_drafts" not in context:
-            context["knowledge_point_drafts"] = []
-        context["knowledge_point_drafts"].extend(knowledge_point_drafts)
-        
-        self._log(f"Generated {len(knowledge_point_drafts)} knowledge point drafts.")
-        
-        # Clear raw_data to avoid reprocessing in later stages
-        context["raw_data"] = []
-        
-        return context
+        return initial_context

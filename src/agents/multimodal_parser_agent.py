@@ -1,46 +1,34 @@
-# src/agents/multimodal_parser_agent.py
-
-from src.agents.base_agent import BaseAgent
-from typing import Dict, Any
+from .base_agent import BaseAgent
+from typing import Dict, Any, List
 
 class MultimodalParserAgent(BaseAgent):
-    def __init__(self, name: str, description: str):
-        super().__init__(name, description)
+    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
+        super().__init__(name, description, api_key, api_url)
 
-    async def execute(self, context: Dict[str, Any]) -> Dict[str, Any]:
-        self._log("Starting multimodal parsing...")
-        
-        # This is a placeholder for a complex implementation.
-        # A real implementation would involve libraries like:
-        # - python-pptx for PowerPoint files
-        # - PyPDF2 or pdfplumber for PDF files
-        # - moviepy or whisper for video/audio files
-        
-        # For now, it will simulate finding and parsing some files.
-        # It will look for a list of files in the context and add parsed text.
-        
-        resource_files = context.get("resource_files", []) # e.g., ["lecture1.pptx", "book_chapter.pdf"]
-        
-        if not resource_files:
-            self._log("No resource files found to parse.")
-            return context
-            
-        parsed_content = []
-        for file_path in resource_files:
-            self._log(f"Simulating parsing of file: {file_path}")
-            # Simulate parsing based on file extension
-            if file_path.endswith(".pptx"):
-                parsed_text = f"[Simulated parsed text from {file_path}] - Slide 1: Intro, Slide 2: Core Concepts..."
-            elif file_path.endswith(".pdf"):
-                parsed_text = f"[Simulated parsed text from {file_path}] - Page 1: Title, Page 2: Introduction..."
-            else:
-                parsed_text = f"[Simulated parsed text from {file_path}] - Content..."
-            parsed_content.append({"source": file_path, "content": parsed_text})
+    async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Processes multi-format materials like textbooks, PPTs, etc., and extracts key information.
+        """
+        resource_files = initial_context.get("resource_files", [])
+        course_resources = initial_context.get("course_resources", {})
+        course_name = initial_context.get("course_name", "a generic course")
 
-        # Add the parsed content to the context
-        if "raw_data" not in context:
-            context["raw_data"] = []
-        context["raw_data"].extend(parsed_content)
+        self._log(f"Parsing multimodal materials for '{course_name}'. Files: {resource_files}, Course Resources: {course_resources.keys()}")
+
+        parsed_content_list = []
+        # Simulate parsing of resource files
+        for file_name in resource_files:
+            parsed_content_list.append(f"Content from file '{file_name}' (simulated parsing).")
         
-        self._log(f"Completed parsing of {len(resource_files)} files.")
-        return context
+        # Simulate parsing of textbook information from course_resources
+        if "textbooks" in course_resources and course_resources["textbooks"]:
+            for textbook in course_resources["textbooks"]:
+                parsed_content_list.append(f"Key information from textbook '{textbook}' (simulated parsing).")
+
+        parsed_content = "\n".join(parsed_content_list)
+        if not parsed_content:
+            parsed_content = f"No specific multimodal content parsed for {course_name}."
+
+        self._log("Multimodal materials parsed (simulated).")
+        initial_context["multimodal_parsed_content"] = parsed_content
+        return initial_context
