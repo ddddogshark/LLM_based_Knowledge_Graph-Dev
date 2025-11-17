@@ -87,3 +87,4 @@ class KgBuilderAgent(BaseAgent):
 
         initial_context["final_knowledge_graph"] = unified_triplets
         return initial_context
+        return initial_context

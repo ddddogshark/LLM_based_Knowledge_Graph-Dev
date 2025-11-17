@@ -111,14 +111,15 @@ if __name__ == "__main__":
     from src.agents.internet_scraper_agent import InternetScraperAgent
     from src.agents.academic_scraper_agent import AcademicScraperAgent
     from src.agents.content_understanding_agent import ContentUnderstandingAgent
-    from src.agents.knowledge_generation_agent import KnowledgeGenerationAgent # Added
-    from src.agents.knowledge_structuring_agent import KnowledgeStructuringAgent # Added
     # Stage 3 Agents
     from src.agents.theoretical_analysis_agent import TheoreticalAnalysisAgent
     from src.agents.practical_analysis_agent import PracticalAnalysisAgent
     from src.agents.kg_builder_agent import KgBuilderAgent
     # Stage 5 Agents
     from src.agents.report_generation_agent import ReportGenerationAgent
+    # Added back missing imports
+    from src.agents.knowledge_generation_agent import KnowledgeGenerationAgent
+    from src.agents.knowledge_structuring_agent import KnowledgeStructuringAgent
 
     async def demand_review_gate(context: Dict[str, Any], agent_manager: AgentManager) -> bool:
         print("\n--- Simulating Demand Review Meeting (Gate 1) ---")
@@ -140,7 +141,7 @@ if __name__ == "__main__":
         if not drafts:
             print("Gate 2: No knowledge point drafts were generated. REJECTED.")
             return False
-        sample_draft = drafts[0]['explanation'] # Changed from 'draft' to 'explanation'
+        sample_draft = drafts[0]['explanation']
         review_passed = await validation_agent.organize_review("Knowledge Point Draft Sample Review", sample_draft)
         if review_passed:
             print("Gate 2: Knowledge point drafts seem to be of good quality. APPROVED.")
