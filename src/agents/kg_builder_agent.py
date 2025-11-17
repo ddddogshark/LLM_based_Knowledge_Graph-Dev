@@ -53,7 +53,11 @@ class KgBuilderAgent(BaseAgent):
             triplets_json_str = await self.llm_service.generate_text(prompt, temperature=0.3)
             triplets = extract_json_from_string(triplets_json_str)
             if isinstance(triplets, list):
-                all_triplets.extend(triplets)
+                for triplet in triplets:
+                    if isinstance(triplet, dict) and triplet.get("head") and triplet.get("relation") and triplet.get("tail"):
+                        all_triplets.append(triplet)
+                    else:
+                        self._log(f"Warning: Discarding invalid triplet in batch {i//BATCH_SIZE + 1}: {triplet}")
             else:
                 self._log(f"Warning: LLM returned non-list content for triplets in batch {i//BATCH_SIZE + 1}: {triplets_json_str}")
         
