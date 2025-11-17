@@ -49,7 +49,9 @@ class Orchestrator:
 
                 if stage_info["gate_function"]:
                     print(f"--- Applying Quality Gate for Stage: {stage_name} ---")
+                    print(f"DEBUG: Gate function for stage '{stage_name}': {stage_info['gate_function']}")
                     gate_passed = await stage_info["gate_function"](self.context, self.agent_manager)
+                    print(f"DEBUG: Gate function for stage '{stage_name}' returned: {gate_passed}")
                     if gate_passed:
                         print(f"Quality Gate for '{stage_name}' PASSED.")
                         stage_info['status'] = "COMPLETED"

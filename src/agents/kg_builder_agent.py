@@ -74,21 +74,27 @@ class KgBuilderAgent(BaseAgent):
         Integrates all reviewed course sub-graphs to build a complete subject knowledge graph.
         This method would also store the integrated graph in a database (e.g., Neo4j).
         """
-        self._log("Integrating sub-knowledge graphs into a unified knowledge graph.")
-        all_subgraphs = initial_context.get("subgraphs", {})
-        
-        unified_triplets = []
-        for course, triplets in all_subgraphs.items():
-            unified_triplets.extend(triplets)
-        
-        # In a real scenario, this would involve more sophisticated integration logic
-        # (e.g., entity resolution, conflict resolution) and then storing in Neo4j.
-        self._log(f"Unified knowledge graph contains {len(unified_triplets)} triplets.")
-        
-        # Store in Neo4j
-        await self.neo4j_driver.store_triplets(unified_triplets)
-        self._log("Unified knowledge graph stored in Neo4j.")
+        try:
+            self._log("Integrating sub-knowledge graphs into a unified knowledge graph.")
+            all_subgraphs = initial_context.get("subgraphs", {})
+            
+            unified_triplets = []
+            for course, triplets in all_subgraphs.items():
+                unified_triplets.extend(triplets)
+            
+            # In a real scenario, this would involve more sophisticated integration logic
+            # (e.g., entity resolution, conflict resolution) and then storing in Neo4j.
+            self._log(f"Unified knowledge graph contains {len(unified_triplets)} triplets.")
+            
+            # Store in Neo4j
+            if self.neo4j_driver:
+                self.neo4j_driver.store_triplets(unified_triplets)
+                self._log("Unified knowledge graph stored in Neo4j.")
+            else:
+                self._log("Neo4j driver not available. Skipping storage.")
 
-        initial_context["final_knowledge_graph"] = unified_triplets
-        return initial_context
+            initial_context["final_knowledge_graph"] = unified_triplets
+        except Exception as e:
+            self._log(f"Error during knowledge graph integration: {e}")
+        
         return initial_context
