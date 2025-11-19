@@ -23,11 +23,14 @@ class ReportGenerationAgent(BaseAgent):
             initial_context["final_report_path"] = None
             return initial_context
 
+        # Context-aware truncation
         kg_summary = ""
         for triplet in final_knowledge_graph:
-            kg_summary += f"- {triplet['head']} -> {triplet['relation']} -> {triplet['tail']}\n"
-            if len(kg_summary) > 2000:
+            triplet_str = f"- ({triplet['head']}) -[{triplet['relation']}]-> ({triplet['tail']})\n"
+            if len(kg_summary) + len(triplet_str) > 4000:
+                kg_summary += "- ... (and more)\n"
                 break
+            kg_summary += triplet_str
 
         prompt = f"""
         As a Report Generation Specialist, your task is to create a comprehensive Markdown report summarizing the constructed knowledge graph for the course "{course_name}".
