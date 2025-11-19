@@ -1,6 +1,11 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
-from src.utils.json_parser import extract_json_from_string # Import the utility
+from src.utils.json_parser import extract_json_from_string
+from src.services.llm_service import generate_text_sync
+import asyncio
+from requests.exceptions import ReadTimeout
+
+BATCH_SIZE = 20
 
 class ContentUnderstandingAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -8,51 +13,47 @@ class ContentUnderstandingAgent(BaseAgent):
 
     async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Receives all raw data, performs deep understanding, summarization, and extraction,
-        and outputs structured knowledge point drafts.
+        Processes raw text data from various sources and generates structured knowledge point drafts sequentially.
         """
-        multimodal_content = initial_context.get("multimodal_parsed_content", "")
-        internet_content = initial_context.get("internet_scraped_content", "")
-        academic_content = initial_context.get("academic_scraped_content", "")
         course_name = initial_context.get("course_name", "a generic course")
-
         self._log(f"Understanding content for '{course_name}'. Combining data from multiple sources.")
 
-        combined_raw_data = f"Multimodal Content:\n{multimodal_content}\n\nInternet Content:\n{internet_content}\n\nAcademic Content:\n{academic_content}"
+        all_content = initial_context.get("multimodal_parsed_content", [])
 
-        prompt = f"""
-        As a Knowledge Engineer, your task is to perform deep understanding, summarization, and extraction of key knowledge points from the following raw data.
-        The goal is to create structured knowledge point drafts for the course "{course_name}".
-
-        Raw Data:
-        ---
-        {combined_raw_data}
-        ---
-
-        Please extract key knowledge points. For each knowledge point, provide:
-        -   A concise title/concept.
-        -   A brief explanation.
-        -   Relevant keywords.
-
-        Format the output as a JSON array of objects, where each object represents a knowledge point.
-        Example:
-        [
-            {{
-                "title": "Supervised Learning",
-                "explanation": "A type of machine learning where a model learns from labeled training data.",
-                "keywords": ["machine learning", "labeled data", "classification", "regression"]
-            }}
-        ]
-        """
-        
-        knowledge_point_drafts_json_str = await self.llm_service.generate_text(prompt)
-        self._log("Knowledge point drafts generated.")
-        
-        knowledge_point_drafts = extract_json_from_string(knowledge_point_drafts_json_str)
-        if isinstance(knowledge_point_drafts, list):
-            initial_context["knowledge_point_drafts"] = knowledge_point_drafts
-        else:
-            self._log(f"Error decoding JSON for knowledge point drafts. Raw content: {knowledge_point_drafts_json_str}")
+        if not all_content:
+            self._log("No content to understand.")
             initial_context["knowledge_point_drafts"] = []
-        
+            return initial_context
+
+        all_knowledge_points = []
+        for i in range(0, len(all_content), BATCH_SIZE):
+            batch = all_content[i:i + BATCH_SIZE]
+            combined_text = "\n\n".join(batch)
+
+            prompt = f"""
+            Based on the following content for a course on "{course_name}", identify and generate a list of key knowledge points.
+            Each knowledge point should be a dictionary with 'title', 'explanation', and 'keywords' (a list of strings).
+            Return a JSON array of these dictionaries.
+
+            Content:
+            {combined_text}
+            """
+            
+            self._log(f"Processing batch {i//BATCH_SIZE + 1} of {len(all_content)//BATCH_SIZE + 1}")
+            try:
+                kp_drafts_json_str = generate_text_sync(prompt, temperature=0.5)
+                kp_drafts = extract_json_from_string(kp_drafts_json_str)
+
+                if isinstance(kp_drafts, list) and all(isinstance(item, dict) for item in kp_drafts):
+                    all_knowledge_points.extend(kp_drafts)
+                else:
+                    self._log(f"Failed to generate valid knowledge point drafts for batch {i//BATCH_SIZE + 1}. Raw LLM output: {kp_drafts_json_str}")
+            except ReadTimeout:
+                self._log(f"ReadTimeout error on batch {i//BATCH_SIZE + 1}. Skipping this batch.")
+            
+            await asyncio.sleep(1)
+
+        self._log(f"Knowledge point drafts generated: {len(all_knowledge_points)} total.")
+        initial_context["knowledge_point_drafts"] = all_knowledge_points
+
         return initial_context

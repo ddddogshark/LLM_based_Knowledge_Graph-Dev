@@ -2,6 +2,7 @@ from .base_agent import BaseAgent
 from typing import Dict, Any
 import json
 import os
+from src.services.llm_service import generate_text_sync
 
 class ReportGenerationAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -22,15 +23,18 @@ class ReportGenerationAgent(BaseAgent):
             initial_context["final_report_path"] = None
             return initial_context
 
-        # Convert triplets to a readable string for the LLM
-        triplets_str = "\n".join([f"- ({t['head']}) -[{t['relation']}]-> ({t['tail']})" for t in final_knowledge_graph])
+        kg_summary = ""
+        for triplet in final_knowledge_graph:
+            kg_summary += f"- {triplet['head']} -> {triplet['relation']} -> {triplet['tail']}\n"
+            if len(kg_summary) > 2000:
+                break
 
         prompt = f"""
         As a Report Generation Specialist, your task is to create a comprehensive Markdown report summarizing the constructed knowledge graph for the course "{course_name}".
 
         The knowledge graph consists of the following triplets:
         ---
-        {triplets_str}
+        {kg_summary}
         ---
 
         Your report should include:
@@ -43,7 +47,7 @@ class ReportGenerationAgent(BaseAgent):
         Format the output as a well-structured Markdown document.
         """
         
-        final_report = await self.llm_service.generate_text(prompt)
+        final_report = generate_text_sync(prompt)
         self._log("Final report generated.")
         
         # Save the report to a Markdown file

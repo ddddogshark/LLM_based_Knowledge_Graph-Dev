@@ -1,8 +1,10 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
-from src.utils.json_parser import extract_json_from_string # Import the utility
+from src.utils.json_parser import extract_json_from_string
+from src.services.llm_service import generate_text_sync
+import asyncio
 
-BATCH_SIZE = 5 # Define a batch size for processing knowledge points
+BATCH_SIZE = 5
 
 class KgBuilderAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -24,7 +26,6 @@ class KgBuilderAgent(BaseAgent):
             return initial_context
 
         all_triplets = []
-        # Process knowledge points in batches
         for i in range(0, len(practically_enhanced_knowledge_points), BATCH_SIZE):
             batch = practically_enhanced_knowledge_points[i:i + BATCH_SIZE]
             batch_text_to_structure = []
@@ -50,7 +51,7 @@ class KgBuilderAgent(BaseAgent):
             {combined_text}
             """
             self._log(f"Sending batch {i//BATCH_SIZE + 1} to LLM for triplet extraction.")
-            triplets_json_str = await self.llm_service.generate_text(prompt, temperature=0.3)
+            triplets_json_str = generate_text_sync(prompt, temperature=0.3)
             triplets = extract_json_from_string(triplets_json_str)
             if isinstance(triplets, list):
                 for triplet in triplets:
@@ -60,10 +61,11 @@ class KgBuilderAgent(BaseAgent):
                         self._log(f"Warning: Discarding invalid triplet in batch {i//BATCH_SIZE + 1}: {triplet}")
             else:
                 self._log(f"Warning: LLM returned non-list content for triplets in batch {i//BATCH_SIZE + 1}: {triplets_json_str}")
+            
+            await asyncio.sleep(1)
         
         self._log(f"Sub-knowledge graph built for '{course_name}' with {len(all_triplets)} triplets.")
         
-        # Store subgraphs in context, keyed by course_name
         subgraphs = initial_context.get("subgraphs", {})
         subgraphs[course_name] = all_triplets
         initial_context["subgraphs"] = subgraphs
@@ -82,11 +84,8 @@ class KgBuilderAgent(BaseAgent):
             for course, triplets in all_subgraphs.items():
                 unified_triplets.extend(triplets)
             
-            # In a real scenario, this would involve more sophisticated integration logic
-            # (e.g., entity resolution, conflict resolution) and then storing in Neo4j.
             self._log(f"Unified knowledge graph contains {len(unified_triplets)} triplets.")
             
-            # Store in Neo4j
             if self.neo4j_driver:
                 self.neo4j_driver.store_triplets(unified_triplets)
                 self._log("Unified knowledge graph stored in Neo4j.")

@@ -1,6 +1,8 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
-from src.utils.json_parser import extract_json_from_string # Import the utility
+from src.utils.json_parser import extract_json_from_string
+from src.services.llm_service import generate_text_sync
+import asyncio
 
 class PracticalAnalysisAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -34,13 +36,15 @@ class PracticalAnalysisAgent(BaseAgent):
             Provide the enhanced knowledge point in the same JSON format (title, explanation, keywords) and add a new key "practical_example" with the code or project idea.
             If no practical example is suitable, set "practical_example" to "N/A".
             """
-            enhanced_kp_json_str = await self.llm_service.generate_text(prompt)
+            enhanced_kp_json_str = generate_text_sync(prompt)
             enhanced_kp = extract_json_from_string(enhanced_kp_json_str)
             if enhanced_kp:
                 enhanced_knowledge_points.append(enhanced_kp)
             else:
                 self._log(f"Error decoding JSON for enhanced knowledge point. Raw content: {enhanced_kp_json_str}. Keeping original.")
-                enhanced_knowledge_points.append(kp) # Keep original if parsing fails
+                enhanced_knowledge_points.append(kp)
+            
+            await asyncio.sleep(1)
 
         self._log("Practical analysis completed.")
         initial_context["practically_enhanced_knowledge_points"] = enhanced_knowledge_points

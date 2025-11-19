@@ -1,6 +1,8 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
-from src.utils.json_parser import extract_json_from_string # Import the utility
+from src.utils.json_parser import extract_json_from_string
+from src.services.llm_service import generate_text_sync
+import asyncio
 
 BATCH_SIZE = 5 # Define a batch size for processing knowledge points
 
@@ -51,14 +53,16 @@ class TheoreticalAnalysisAgent(BaseAgent):
             ]
             """
             self._log(f"Sending batch {i//BATCH_SIZE + 1} to LLM for theoretical analysis.")
-            refined_kps_json_str = await self.llm_service.generate_text(prompt)
+            refined_kps_json_str = generate_text_sync(prompt)
             refined_kps = extract_json_from_string(refined_kps_json_str)
             
             if isinstance(refined_kps, list) and len(refined_kps) == len(batch):
                 refined_knowledge_points.extend(refined_kps)
             else:
                 self._log(f"Error decoding JSON or mismatched count for refined knowledge points in batch {i//BATCH_SIZE + 1}. Raw content: {refined_kps_json_str}. Keeping original batch.")
-                refined_knowledge_points.extend(batch) # Keep original batch if parsing fails
+                refined_knowledge_points.extend(batch)
+            
+            await asyncio.sleep(1)
 
         self._log("Theoretical analysis completed.")
         initial_context["theoretically_refined_knowledge_points"] = refined_knowledge_points

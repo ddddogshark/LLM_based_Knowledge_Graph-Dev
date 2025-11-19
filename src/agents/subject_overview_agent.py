@@ -1,5 +1,6 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any
+from src.services.llm_service import generate_text_sync
 
 class SubjectOverviewAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -7,29 +8,22 @@ class SubjectOverviewAgent(BaseAgent):
 
     async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Formulates an overall plan for subject knowledge system construction.
+        Creates an overall subject plan based on the demand specification.
         """
-        demand_spec_doc = initial_context.get("demand_spec_doc", "No demand specification document provided.")
-        course_name = initial_context.get("course_name", "a generic subject")
+        demand_spec_doc = initial_context.get("demand_spec_doc", "")
+        course_name = initial_context.get("course_name", "a generic course")
         self._log(f"Formulating subject overview plan for '{course_name}' based on demand specification.")
 
         prompt = f"""
-        As a Chief Architect for a knowledge system, your task is to formulate an overall plan for subject knowledge system construction.
-        The demand specification document is as follows:
-        ---
+        As a Chief Architect, create a comprehensive and structured plan for building a subject knowledge system for "{course_name}".
+        The plan should be based on the following demand specification document.
+        The plan should be in markdown format and include a list of core courses/topics.
+
+        Demand Specification:
         {demand_spec_doc}
-        ---
-
-        Based on this, please generate a comprehensive plan that includes:
-        1.  **Core Course List:** A list of essential courses or major topics.
-        2.  **Logical Relationships:** How these courses/topics relate to each other (e.g., prerequisites, dependencies).
-        3.  **Unified Data Specifications:** High-level guidelines for data consistency and format across the knowledge graph.
-        4.  **Task Breakdown:** How the overall task of building the knowledge graph for "{course_name}" will be broken down into manageable parts.
-
-        Format the output as a Markdown document.
         """
         
-        subject_overview_plan = await self.llm_service.generate_text(prompt)
+        subject_overview_plan = generate_text_sync(prompt)
         self._log("Subject overview plan generated.")
         
         initial_context["subject_overview_plan"] = subject_overview_plan

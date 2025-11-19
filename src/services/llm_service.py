@@ -1,51 +1,46 @@
 # src/services/llm_service.py
 
-import httpx
+import requests
 import json
-import asyncio
-from src.config import LLM_API_KEY, LLM_API_URL, LLM_MODEL, LLM_API_KEY_PREFIX # Updated imports
+import time
+from src.config import LLM_API_KEY, LLM_API_URL, LLM_MODEL
 
-class LLMService:
-    def __init__(self, api_key: str = None, api_url: str = None):
-        self.api_key = api_key if api_key else LLM_API_KEY
-        self.api_url = api_url if api_url else LLM_API_URL
-        self.model = LLM_MODEL # Use LLM_MODEL
-        self.headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"{LLM_API_KEY_PREFIX}{self.api_key}" # Dynamic prefix
-        }
+def generate_text_sync(prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2) -> str:
+    """
+    A simple, synchronous function to generate text using the LLM API.
+    """
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": LLM_API_KEY
+    }
+    data = {
+        "model": LLM_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature
+    }
 
-    async def generate_text(self, prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2) -> str:
-        data = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": temperature
-        }
-        for attempt in range(retries):
-            try:
-                async with httpx.AsyncClient() as client:
-                    response = await client.post(self.api_url, headers=self.headers, data=json.dumps(data), timeout=120.0)
-                    response.raise_for_status()
-                    response_json = response.json()
-                    return response_json["choices"][0]["message"]["content"]
-            except httpx.RequestError as e:
-                print(f"Error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
-                if attempt < retries - 1:
-                    await asyncio.sleep(delay)
-                else:
-                    return f"Error: {e}"
-            except KeyError as e:
-                print(f"Error parsing LLM API response: {e}")
-                if 'response' in locals():
-                    print(f"Full response: {response.text}")
-                return f"Error parsing response: {e}"
-        return "Error: All retries failed."
+    for attempt in range(retries):
+        try:
+            response = requests.post(LLM_API_URL, headers=headers, data=json.dumps(data), timeout=120.0)
+            response.raise_for_status()
+            response_json = response.json()
+            return response_json["choices"][0]["message"]["content"]
+        except requests.RequestException as e:
+            print(f"Error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                return f"Error: {e}"
+        except KeyError as e:
+            print(f"Error parsing LLM API response: {e}")
+            if 'response' in locals():
+                print(f"Full response: {response.text}")
+            return f"Error parsing response: {e}"
+    return "Error: All retries failed."
 
 # Example usage (for testing purposes)
 if __name__ == "__main__":
-    import asyncio
-    llm_service = LLMService()
     test_prompt = "What is the capital of France?"
     print(f"Querying LLM with prompt: '{test_prompt}'")
-    response_text = asyncio.run(llm_service.generate_text(test_prompt)) # Await the coroutine
+    response_text = generate_text_sync(test_prompt)
     print(f"LLM Response: {response_text}")

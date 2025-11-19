@@ -1,5 +1,6 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
+import os
 
 class MultimodalParserAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -7,28 +8,28 @@ class MultimodalParserAgent(BaseAgent):
 
     async def execute(self, initial_context: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Processes multi-format materials like textbooks, PPTs, etc., and extracts key information.
+        Parses multimodal materials from the specified data path and returns a list of file contents.
         """
-        resource_files = initial_context.get("resource_files", [])
-        course_resources = initial_context.get("course_resources", {})
+        data_path = initial_context.get("data_path")
         course_name = initial_context.get("course_name", "a generic course")
+        self._log(f"Parsing multimodal materials for '{course_name}' from path: {data_path}")
 
-        self._log(f"Parsing multimodal materials for '{course_name}'. Files: {resource_files}, Course Resources: {course_resources.keys()}")
+        if not data_path or not os.path.exists(data_path):
+            self._log(f"Data path not found: {data_path}")
+            initial_context["multimodal_parsed_content"] = []
+            return initial_context
 
-        parsed_content_list = []
-        # Simulate parsing of resource files
-        for file_name in resource_files:
-            parsed_content_list.append(f"Content from file '{file_name}' (simulated parsing).")
-        
-        # Simulate parsing of textbook information from course_resources
-        if "textbooks" in course_resources and course_resources["textbooks"]:
-            for textbook in course_resources["textbooks"]:
-                parsed_content_list.append(f"Key information from textbook '{textbook}' (simulated parsing).")
+        all_md_content = []
+        for root, _, files in os.walk(data_path):
+            for file in files:
+                if file.endswith(".md"):
+                    file_path = os.path.join(root, file)
+                    try:
+                        with open(file_path, "r", encoding="utf-8") as f:
+                            all_md_content.append(f.read())
+                    except Exception as e:
+                        self._log(f"Error reading file {file_path}: {e}")
 
-        parsed_content = "\n".join(parsed_content_list)
-        if not parsed_content:
-            parsed_content = f"No specific multimodal content parsed for {course_name}."
-
-        self._log("Multimodal materials parsed (simulated).")
-        initial_context["multimodal_parsed_content"] = parsed_content
+        self._log(f"Successfully parsed {len(all_md_content)} markdown files.")
+        initial_context["multimodal_parsed_content"] = all_md_content
         return initial_context
