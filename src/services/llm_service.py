@@ -6,13 +6,16 @@ import time
 from src.config import LLM_API_KEY, LLM_API_URL, LLM_MODEL
 from requests.exceptions import ReadTimeout, HTTPError
 
-def generate_text_sync(prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2, backoff_factor: float = 2.0) -> str:
+def generate_text_sync(prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2, backoff_factor: float = 2.0, api_key: str = None, api_url: str = None) -> str:
     """
     A simple, synchronous function to generate text using the LLM API with exponential backoff.
     """
+    api_key_to_use = api_key or LLM_API_KEY
+    api_url_to_use = api_url or LLM_API_URL
+
     headers = {
         "Content-Type": "application/json",
-        "Authorization": LLM_API_KEY
+        "Authorization": api_key_to_use
     }
     data = {
         "model": LLM_MODEL,
@@ -22,7 +25,7 @@ def generate_text_sync(prompt: str, temperature: float = 0.7, retries: int = 3, 
 
     for attempt in range(retries):
         try:
-            response = requests.post(LLM_API_URL, headers=headers, data=json.dumps(data), timeout=120.0)
+            response = requests.post(api_url_to_use, headers=headers, data=json.dumps(data), timeout=120.0)
             response.raise_for_status()
             response_json = response.json()
             if "choices" not in response_json:

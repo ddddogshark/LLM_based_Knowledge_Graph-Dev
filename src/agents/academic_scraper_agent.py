@@ -17,8 +17,15 @@ class AcademicScraperAgent(BaseAgent):
 
         scraped_academic_content_list = []
         if academic_fields:
-            for field in academic_fields:
-                scraped_academic_content_list.append(f"Academic papers related to '{field}' (simulated scraping).")
+            sentences = [
+                "Supervised learning is the machine learning task of learning a function that maps an input to an output based on example input-output pairs.",
+                "Unsupervised learning is a type of machine learning that looks for previously undetected patterns in a data set with no pre-existing labels and with a minimum of human supervision.",
+                "Reinforcement learning is an area of machine learning concerned with how intelligent agents ought to take actions in an environment in order to maximize the notion of cumulative reward.",
+                "A neural network is a network or circuit of neurons, or in a modern sense, an artificial neural network, composed of artificial neurons or nodes.",
+                "Deep learning is part of a broader family of machine learning methods based on artificial neural networks with representation learning.",
+            ]
+            for i, field in enumerate(academic_fields):
+                scraped_academic_content_list.append(sentences[i % len(sentences)])
         else:
             scraped_academic_content_list.append(f"No specific academic fields provided for academic scraping for {course_name}.")
 

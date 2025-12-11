@@ -1,0 +1,213 @@
+head,relation,tail
+Data science,is,interdisciplinary field
+Data science,combines,statistical analysis
+Data science,combines,computational algorithms
+Data science,combines,domain expertise
+Data science,extracts,actionable insights
+Actionable insights,are from,structured data
+Actionable insights,are from,unstructured data
+Data science,encompasses,data collection
+Data science,encompasses,data cleaning
+Data science,encompasses,data modeling
+Data science,encompasses,data interpretation
+Data science,informs,evidence-based decision-making
+Evidence-based decision-making,is across,healthcare
+Evidence-based decision-making,is across,finance
+Evidence-based decision-making,is across,technology
+Machine learning,is,core subfield of artificial intelligence
+Machine learning,employs,algorithms
+Algorithms,learn,patterns from data
+Algorithms,generate,models
+Models,are capable of,prediction
+Models,are capable of,classification
+Models,are capable of,decision-making
+Models,generalize from,training data
+Models,do not rely on,explicit programming rules
+Models,enable adaptation to,new data
+Models,enable adaptation to,unseen data
+Example,demonstrates,ML pipeline
+ML pipeline,uses,Iris dataset
+Model,learns,patterns
+Patterns,include,petal length
+Patterns,include,sepal width
+Model,classifies,flower species
+RandomForest algorithm,improves,predictions
+RandomForest algorithm,showcases,generalization
+Generalization,handles,unseen data
+RandomForest algorithm,showcases,predictive modeling
+Users,extend,example
+Users,test,algorithms
+Algorithms,include,SVM
+Algorithms,include,KNN
+Users,tune,hyperparameters
+Hyperparameters,impact,performance
+Data preprocessing,prepares,raw datasets for analysis
+Data preprocessing,includes,data cleaning
+Data preprocessing,includes,transformation
+Data preprocessing,includes,scaling
+Data cleaning,handles,missing values
+Data cleaning,removes,duplicates
+Transformation,includes,encoding categorical variables
+Transformation,includes,normalization
+Scaling,includes,standardization
+Scaling,includes,outlier treatment
+Techniques,ensure,data quality
+Techniques,reduce,bias
+Techniques,improve,performance of analytical models
+Exploratory data analysis,is,systematic approach
+Exploratory data analysis,summarizes,datasets
+Exploratory data analysis,visualizes,datasets
+Exploratory data analysis,uncovers,underlying structures
+Exploratory data analysis,uncovers,anomalies
+Exploratory data analysis,uncovers,relationships
+EDA,employs,statistical summaries
+Statistical summaries,include,mean
+Statistical summaries,include,variance
+EDA,employs,graphical techniques
+Graphical techniques,include,histograms
+Graphical techniques,include,scatter plots
+EDA,generates,hypotheses
+EDA,guides,modeling efforts
+Supervised learning,leverages,labeled datasets
+Supervised learning,trains,models
+Models,are for,classification
+Classification,predicts,discrete labels
+Models,are for,regression
+Regression,predicts,continuous values
+Unsupervised learning,identifies,inherent structures
+Unsupervised learning,uses,clustering
+Clustering,groups,similar instances
+Unsupervised learning,uses,dimensionality reduction
+Dimensionality reduction,simplifies,feature spaces
+Data Science,employs,scientific methods
+Data Science,employs,algorithms
+Data Science,employs,systems
+Data Science,extracts,knowledge and insights from structured and unstructured data
+Data Science,encompasses,statistics
+Data Science,encompasses,machine learning
+Data Science,encompasses,data engineering
+Data Science,supports,decision-making across domains
+Customer Churn Prediction System,develops,predictive model
+predictive model,identifies,customers at risk of churning
+Customer Churn Prediction System,involves,data cleaning
+Customer Churn Prediction System,involves,feature engineering
+Customer Churn Prediction System,involves,training machine learning model
+machine learning model,supports,retention strategies
+Machine Learning,is,a branch of artificial intelligence
+Machine Learning,uses,algorithmic models
+algorithmic models,enable,computers to learn patterns from data
+algorithmic models,improve,performance on tasks
+algorithmic models,make,predictions or decisions
+Machine Learning,uses,supervised learning
+Machine Learning,uses,unsupervised learning
+Machine Learning,uses,reinforcement learning
+classification system,predicts,plant species
+classification system,uses,Iris dataset
+Data Analysis,is,a systematic process
+Data Analysis,involves,data collection
+Data Analysis,involves,transformation
+Data Analysis,involves,statistical modeling
+Data Analysis,involves,interpretation
+Data Analysis,uncovers,patterns
+Data Analysis,tests,hypotheses
+Data Analysis,supports,evidence-based conclusions
+Data Analysis,serves as,precursor to advanced modeling in data science workflows
+Retail Sales Analysis,generates,synthetic sales data
+Exploratory Data Analysis,uncovers,patterns
+Hypothesis testing,tests,if promotions affect sales
+Statistical modeling,models,sales vs advertising spend
+LinearRegression,is used in,statistical modeling
+Data Visualization,represents,quantitative information
+Data Visualization,uses,visual constructs
+visual constructs,include,charts
+visual constructs,include,graphs
+visual constructs,include,interactive dashboards
+Data Visualization,enhances,comprehension
+Data Visualization,reveals,hidden patterns
+Data Visualization,facilitates,analytical reasoning
+Interactive Disease Outbreak Dashboard,visualizes,spread of disease
+Dashboard,allows users to explore,geographic hotspots
+Dashboard,explores,daily case trends
+Dashboard,compares,regions
+Interactive Disease Outbreak Dashboard,uses,Dash and Plotly
+Python,is,a dynamically typed programming language
+Python,is,object-oriented
+Python,has,automatic memory management
+Python,is renowned for,readability
+Python,has,ecosystem of libraries
+Python's libraries,include,NumPy
+Python's libraries,include,Pandas
+Python's libraries,include,TensorFlow
+Python,is dominant tool in,data science
+Python,is dominant tool in,scientific computing
+Pandas,handles,missing values
+Matplotlib,visualizes,sales trends
+R Programming Language,is,"a programming language and open-source software environment specifically designed for statistical computing, data visualization, and data science workflows, including advanced statistical analysis and graphical representation of data"
+R Programming Language,uses,ggplot2
+R Programming Language,uses,stats
+R Programming Language,uses,mtcars dataset
+R Programming Language,applies,Exploratory Data Analysis (EDA)
+Exploratory Data Analysis (EDA),uses,mtcars dataset
+mtcars,has attribute,mpg
+mtcars,has attribute,wt
+mpg,correlates with,wt
+R Programming Language,performs,linear regression
+linear regression,predicts,mpg based on weight and horsepower
+R Programming Language,visualizes,residuals
+Supervised Learning,is,"a machine learning paradigm where models learn to map input-output pairs by generalizing from labeled training data, enabling predictive inference on unseen data"
+Supervised Learning,uses,KNeighborsClassifier
+Supervised Learning,uses,Iris dataset
+KNeighborsClassifier,is used in,Supervised Learning
+Supervised Learning,involves,train-test split
+Supervised Learning,uses,accuracy_score
+Supervised Learning,performs,predictive modeling
+Supervised Learning,generalizes,to new inputs
+Supervised Learning,uses,RandomForestClassifier
+RandomForestClassifier,is used in,Supervised Learning
+Unsupervised Learning,is,"a machine learning approach that discovers latent structures, patterns, or groupings in unlabeled datasets through exploratory analysis without explicit guidance or predefined labels"
+Unsupervised Learning,uses,KMeans
+KMeans,is used in,Unsupervised Learning
+Unsupervised Learning,uses,PCA
+Unsupervised Learning,visualizes,clusters
+Iris dataset,is used in,Unsupervised Learning
+Reinforcement Learning,is,a machine learning framework where autonomous agents learn optimal decision-making policies through iterative interaction with an environment to maximize long-term cumulative rewards
+Reinforcement Learning,uses,Proximal Policy Optimization
+Proximal Policy Optimization,is used in,Reinforcement Learning
+Reinforcement Learning,uses,CartPole-v1
+CartPole-v1,is,environment
+Reinforcement Learning,involves,agent-environment interaction
+Reinforcement Learning,optimizes,policy
+Reinforcement Learning,maximizes,cumulative reward
+Reinforcement Learning,applies,sequential decision-making
+Neural Networks,inspired by,biological neurons
+Neural Networks,comprising,layers of interconnected artificial neurons
+neuron,processes,inputs using weighted sums
+neuron,uses,activation functions
+network architecture,designed to approximate,complex functions
+network architecture,uses,learning algorithms like backpropagation
+neural network,solves,XOR problem
+XOR problem,is,non-linearly separable data
+Artificial neurons,are units in,Dense layers
+Network architecture,comprises,Input layer with 2 neurons
+Network architecture,comprises,Hidden layer with 4 neurons
+Network architecture,comprises,Output layer with 1 neuron
+ReLU,used as activation function in,hidden layer
+sigmoid,used as activation function in,output layer
+Adam optimizer,handles,backpropagation during training
+Deep Learning,is a subfield of,machine learning
+Deep Learning,focused on,multi-layer neural networks
+multi-layer neural networks,extract,increasingly abstract representations across layers
+multi-layer neural networks,rely on,large datasets
+multi-layer neural networks,rely on,computational resources
+multi-layer neural networks,optimize,millions of parameters via backpropagation
+Image Classification,solved using,Convolutional Neural Networks (CNNs)
+Project Idea,implemented with,TensorFlow/Keras
+CNN model,contains,Conv2D layers
+CNN model,contains,MaxPooling2D layers
+CNN model,contains,Flatten layer
+CNN model,contains,Dense layers
+CNN model,compiled with optimizer,Adam
+CNN model,uses loss function,SparseCategoricalCrossentropy
+model training,epochs,10
+model training,validation data,test_images and test_labels
+activation model,is,tf.keras.Model instance

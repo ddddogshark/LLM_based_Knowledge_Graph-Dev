@@ -69,7 +69,31 @@ class Orchestrator:
                 stage_info['status'] = "FAILED"
                 break
 
+        # Save final context for debugging
+        import json
+        with open("final_context.json", "w") as f:
+            # Convert context to a serializable format
+            serializable_context = {}
+            for key, value in self.context.items():
+                if isinstance(value, (str, int, float, bool, list, dict, type(None))):
+                    serializable_context[key] = value
+                else:
+                    serializable_context[key] = str(value)
+            json.dump(serializable_context, f, indent=4)
+
         print("\n--- Pipeline Execution Finished ---")
+        # Print final context keys for verification
+        print("\n--- Final Context ---")
+        for key, value in self.context.items():
+            if isinstance(value, list) and len(value) > 10:
+                print(f"{key}: (list of {len(value)} items)")
+            elif isinstance(value, str) and len(value) > 200:
+                print(f"{key}: {value[:200]}...")
+            else:
+                print(f"{key}: {value}")
+        
+        print("\n--- Pipeline Status ---")
+        print(self.get_pipeline_status())
         return self.context
 
     async def _execute_stage_agents(self, stage_name: str):

@@ -1,6 +1,8 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
 from src.utils.json_parser import extract_json_from_string # Import the utility
+from src.services.llm_service import generate_text_sync
+import asyncio
 
 class CourseAgent(BaseAgent):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
@@ -29,7 +31,7 @@ class CourseAgent(BaseAgent):
         }}
         """
         
-        resources_json_str = await self.llm_service.generate_text(prompt)
+        resources_json_str = generate_text_sync(prompt)
         self._log("Core resources generated.")
         
         resources = extract_json_from_string(resources_json_str)
@@ -39,6 +41,7 @@ class CourseAgent(BaseAgent):
             self._log(f"Error decoding JSON for course resources. Raw content: {resources_json_str}")
             initial_context["course_resources"] = {"textbooks": [], "keywords": [course_name], "academic_fields": []}
         
+        await asyncio.sleep(1)
         return initial_context
 
     async def review_knowledge_points(self, knowledge_points: List[Dict[str, Any]]) -> bool:

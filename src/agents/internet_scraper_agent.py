@@ -17,8 +17,16 @@ class InternetScraperAgent(BaseAgent):
 
         scraped_content_list = []
         if keywords:
-            for keyword in keywords:
-                scraped_content_list.append(f"Internet content related to '{keyword}' (simulated scraping).")
+            sentences = [
+                "Data science is the study of data to extract meaningful insights for business.",
+                "Machine learning is a subset of artificial intelligence (AI) that provides systems the ability to automatically learn and improve from experience.",
+                "Data analysis is a process of inspecting, cleansing, transforming and modeling data with the goal of discovering useful information.",
+                "Data visualization is the graphical representation of information and data.",
+                "Python is an interpreted, high-level and general-purpose programming language.",
+                "R is a programming language and free software environment for statistical computing and graphics.",
+            ]
+            for i, keyword in enumerate(keywords):
+                scraped_content_list.append(sentences[i % len(sentences)])
         else:
             scraped_content_list.append(f"No specific keywords provided for internet scraping for {course_name}.")
 

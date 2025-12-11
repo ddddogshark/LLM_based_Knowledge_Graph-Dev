@@ -1,18 +1,37 @@
-from .base_agent import BaseAgent
+import os
+import requests
+import json
+from dotenv import load_dotenv
 
-class KnowledgeGenerationAgent(BaseAgent):
-    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
-        super().__init__(name, description, api_key, api_url)
+load_dotenv()
 
-    async def execute(self, topic: str) -> str:
-        """
-        Generates knowledge points for a given topic using the LLM service.
-        """
-        self._log(f"Generating knowledge for topic: {topic}")
-        prompt = f"Generate detailed knowledge points about: {topic}"
-        content = await self.llm_service.generate_text(prompt)
-        if "Error" in content:
-            self._log(f"Error generating knowledge for '{topic}': {content}")
-        else:
-            self._log(f"Successfully generated knowledge for '{topic}'.")
-        return content
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_API_URL = os.getenv("DEEPSEEK_API_URL")
+
+def generate_knowledge(topic: str) -> str:
+    """
+    Generates knowledge points for a given topic using the DeepSeek API.
+    """
+    if not DEEPSEEK_API_KEY or not DEEPSEEK_API_URL:
+        return "DeepSeek API key or URL not configured."
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+    }
+
+    data = {
+        "model": "DeepSeek-R1-671B",
+        "messages": [{"role": "user", "content": f"Generate detailed knowledge points about: {topic}"}],
+        "temperature": 0.7,
+    }
+
+    try:
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, data=json.dumps(data))
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        response_json = response.json()
+        return response_json.get("choices", [{}])[0].get("message", {}).get("content", "No content generated.")
+    except requests.exceptions.RequestException as e:
+        return f"Error calling DeepSeek API: {e}"
+    except json.JSONDecodeError:
+        return f"Error decoding JSON response from DeepSeek API: {response.text}"

@@ -1,28 +1,22 @@
+
 from fastapi import FastAPI
 from dotenv import load_dotenv
 
-# Import the router from the api module
+# Import the router from the new API module
 from src.api.knowledge_graph import router as kg_router
 
 load_dotenv()
 
-app = FastAPI(
-    title="LLM-based Knowledge Graph Constructor",
-    description="An API to build a knowledge graph from courses using LLMs.",
-    version="0.1.0",
-)
+from src.config import LLM_API_KEY # Import LLM_API_KEY for verification
 
-# Include the router from the api module
-app.include_router(kg_router, prefix="/kg", tags=["Knowledge Graph"])
+app = FastAPI()
 
-@app.get("/", tags=["Root"])
+@app.get("/")
 def read_root():
-    """
-    Root endpoint that returns a welcome message.
-    """
-    return {"Hello": "World"}
+    return {"Hello": "World", "message": "Welcome to the Knowledge Graph Builder API"}
 
-# The neo4j_driver initialization is now in src/database/connection.py
-# and is imported by the api module.
-# The agent functions are also called within the api module.
-# The Pydantic models and other imports were moved to the api module.
+# Include the new router with the /kg prefix
+app.include_router(kg_router, prefix="/kg")
+
+# The old endpoints below are now obsolete and have been removed.
+# The new architecture is handled by the router in src/api/knowledge_graph.py.

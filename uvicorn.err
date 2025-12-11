@@ -1,0 +1,6 @@
+INFO:     Will watch for changes in these directories: ['C:\\Users\\LZ-WEI\\LLM_based_Knowledge_Graph']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [29788] using WatchFiles
+INFO:     Started server process [31552]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

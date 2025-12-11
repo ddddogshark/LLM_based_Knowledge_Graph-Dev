@@ -11,17 +11,19 @@ class DemandAnalysisAgent(BaseAgent):
         Analyzes the user's query to produce a structured demand specification document.
         """
         user_query = initial_context.get("user_query", "No specific query provided.")
-        self._log(f"Analyzing demand for user query: {user_query}")
+        main_query_input = initial_context.get("course_name", "")
+        if user_query != "No specific query provided.":
+            main_query_input = f"{main_query_input} with additional user request: {user_query}"
 
         prompt = f"""
-        As a Senior Analyst, analyze the following user query and generate a structured demand specification document in markdown format.
-        The document should clarify the user's needs, define the scope, and outline key requirements.
+        As a Senior Analyst, analyze the following query and generate a structured demand specification document in markdown format.
+        The document should clarify the needs, define the scope, and outline key requirements.
         If the query is generic, create a comprehensive template for a demand specification document.
 
-        User Query: "{user_query}"
+        Query: "{main_query_input}"
         """
         
-        demand_spec_doc = generate_text_sync(prompt)
+        demand_spec_doc = generate_text_sync(prompt, api_key=self.api_key, api_url=self.api_url)
         self._log("Demand specification document generated.")
         
         initial_context["demand_spec_doc"] = demand_spec_doc

@@ -12,12 +12,31 @@ This project is a FastAPI-based application that uses Large Language Models (LLM
 
 ## Architecture Overview
 
-The application follows a simple, multi-agent pipeline:
+The application follows a modular, multi-agent pipeline orchestrated by a central `Orchestrator`. This design allows for flexible and extensible knowledge graph construction, primarily focusing on processing knowledge from local files.
 
-1.  **Planner Agent:** Receives a high-level topic (e.g., a course name) and generates a structured plan or outline.
-2.  **Generation Agent:** Takes each item from the plan and generates detailed, unstructured text about it.
-3.  **Structuring Agent:** Processes the unstructured text to extract a list of structured knowledge triplets.
-4.  **Database Driver:** Stores these triplets in a Neo4j database, forming the knowledge graph.
+### Core Components
+
+1.  **FastAPI Server (`src/main.py`)**: The entry point for the application, providing RESTful API endpoints to trigger and interact with the knowledge graph construction process.
+2.  **Orchestrator (`src/core/orchestrator.py`)**: Manages and executes the entire pipeline, maintaining the stages, agents, and shared data (`Context`).
+3.  **AgentManager (`src/core/agent_manager.py`)**: Responsible for registering, initializing, and retrieving various agents.
+4.  **BaseAgent (`src/agents/base_agent.py`)**: An abstract base class defining the common interface and functionalities for all agents.
+5.  **Specialized Agents (`src/agents/`)**: Each agent handles a specific task within the pipeline. Key agents include:
+    *   `MultimodalParserAgent`: The core data ingestion agent. It reads Markdown and image files from specified local directories by traversing them hierarchically. For each course found, it aggregates all its content into a single, course-specific Markdown file (e.g., `CourseName.md`) for review. The parsed content and image paths are then stored in the shared context for downstream agents.
+    *   `ContentUnderstandingAgent`: Processes text content from various sources, segments it, and extracts knowledge point drafts using an LLM.
+    *   `KgBuilderAgent`: Extracts knowledge triplets from refined knowledge points and integrates them into the Neo4j database.
+    *   Other agents like `DemandAnalysisAgent`, `TheoreticalAnalysisAgent`, `PracticalAnalysisAgent`, and `ReportGenerationAgent` handle specific steps in the knowledge refinement and reporting process.
+6.  **Services (`src/services/`)**: Provide common services, such as interaction with Large Language Models (LLMs).
+7.  **Database Drivers (`src/database/`)**: Offer connectivity and operations for databases (e.g., Neo4j).
+
+### Pipeline Stages
+
+The entire process is divided into five distinct stages:
+
+1.  **Demand Analysis and Planning**: `DemandAnalysisAgent` creates a structured requirement document.
+2.  **Data Collection and Preprocessing**: `MultimodalParserAgent` reads local Markdown and image files, while `ContentUnderstandingAgent` processes the text to extract knowledge point drafts.
+3.  **Knowledge Refinement and Course Construction**: `TheoreticalAnalysisAgent` and `PracticalAnalysisAgent` refine knowledge points, and `KgBuilderAgent` extracts knowledge triplets.
+4.  **Knowledge Graph Integration and Validation**: `KgBuilderAgent` integrates extracted triplets into the Neo4j database.
+5.  **Report Generation and Delivery**: `ReportGenerationAgent` generates a summary report based on the final knowledge graph.
 
 This entire process is exposed via a FastAPI server.
 
@@ -66,20 +85,49 @@ This entire process is exposed via a FastAPI server.
     ```
     The API will be available at `http://127.0.0.1:8000`. You can access the interactive API documentation (Swagger UI) at `http://127.0.0.1:8000/docs`.
 
+## Usage
+
+1.  **Run the FastAPI server:**
+    ```bash
+    uvicorn src.main:app --reload
+    ```
+    The API will be available at `http://127.00.1:8000`. You can access the interactive API documentation (Swagger UI) at `http://127.0.0.1:8000/docs`.
+
 2.  **API Endpoints:**
     All knowledge graph endpoints are prefixed with `/kg`.
 
-    - **`GET /kg/plan_kg/{course_name}`**: Generates a learning plan for a course.
-      - Example: `http://127.0.0.1:8000/kg/plan_kg/DSAA2011%20Machine%20Learning`
+    -   **`POST /kg/build`**: Triggers the asynchronous pipeline to construct a knowledge graph for a given course. This endpoint now supports an optional `data_path` parameter in the request body to specify local directories containing Markdown and image files.
+        -   **Method**: `POST`
+        -   **URL**: `http://127.0.0.1:8000/kg/build`
+        -   **Request Body (JSON)**:
+            ```json
+            {
+                "course_name": "Data Science",
+                "data_path": "E:/data" // Optional: path to local files
+            }
+            ```
+        -   **Example (using curl)**:
+            ```bash
+            curl -X POST "http://127.0.0.1:8000/kg/build" -H "Content-Type: application/json" -d "{
+                \"course_name\": \"Data Science\",
+                \"data_path\": \"E:/data\"
+            }"
+            ```
+            Or, if you only want to generate content online via LLM (without local files):
+            ```bash
+            curl -X POST "http://127.0.0.1:8000/kg/build" -H "Content-Type: application/json" -d "{
+                \"course_name\": \"Data Science\"
+            }"
+            ```
 
-    - **`GET /kg/generate_knowledge/{topic}`**: Generates knowledge text for a topic.
-      - Example: `http://127.0.0.1:8000/kg/generate_knowledge/Supervised%20Learning`
+    -   **`GET /kg/build/status/{task_id}`**: Retrieves the status of a knowledge graph construction task.
+        -   **Example**: `http://127.0.0.1:8000/kg/build/status/your-task-id`
 
-    - **`POST /kg/extract_triplets`**: Extracts triplets from a block of text.
-      - Body: `{"text": "Your text here..."}`
-
-    - **`POST /kg/store_triplets`**: Stores a list of triplets in the database.
-      - Body: `{"triplets": [{"head": "A", "relation": "is", "tail": "B"}]}`
+    -   **Older Endpoints (not part of the main pipeline flow):**
+        -   `GET /kg/plan_kg/{course_name}`: Generates a learning plan for a course.
+        -   `GET /kg/generate_knowledge/{topic}`: Generates knowledge text for a topic.
+        -   `POST /kg/extract_triplets`: Extracts triplets from a block of text.
+        -   `POST /kg/store_triplets`: Stores a list of triplets in the database.
 
 ## Running Tests
 

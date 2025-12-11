@@ -1,77 +1,80 @@
-# DATA SCIENCE Course Knowledge Graph Report  
-
-## 1. Introduction  
-This knowledge graph serves as a structured representation of interconnected concepts within the "DATA SCIENCE" course. Its purpose is to:  
-- **Visualize relationships** between foundational and advanced topics (e.g., machine learning, probability, linear algebra).  
-- **Clarify hierarchies** (e.g., taxonomies of machine learning types) and **associations** (e.g., tools and techniques).  
-- **Support learners and practitioners** in understanding how theoretical concepts map to practical applications (e.g., algorithms, evaluation metrics).  
+# Data Science Knowledge Graph Report
 
 ---
 
-## 2. Key Concepts and Relationships  
+## 1. Introduction
 
-### Central Entities  
-| **Entity**                      | **Significance**                                                                 |  
-|----------------------------------|----------------------------------------------------------------------------------|  
-| **Machine Learning**            | Core of the graph; links to AI, algorithmic learning, and applications like predictive analytics. |  
-| **Supervised Learning**         | Includes regression (e.g., linear regression) and classification (e.g., SVMs).   |  
-| **Unsupervised Learning**       | Focuses on clustering (e.g., KMeans) and feature space exploration.              |  
-| **Probability Theory**          | Underpins uncertainty modeling (e.g., Bayes' theorem, Bernoulli/Gaussian distributions). |  
-| **Linear Algebra**              | Critical for operations like matrix inversion and PCA (eigenvalue decomposition).|  
-| **Model Evaluation**            | Metrics (accuracy, F1-score) and techniques (cross-validation, grid search).     |  
-
-### Notable Relationships  
-- **Taxonomies**:  
-  - `Machine Learning` has core taxonomies: `supervised learning`, `unsupervised learning`, and `reinforcement learning`.  
-  - `Supervised Learning` includes `regression` and `classification`.  
-
-- **Applications**:  
-  - `DecisionTreeClassifier` → used in `supervised learning`.  
-  - `KMeans` → used in `unsupervised learning`.  
-  - `PCA` → uses `eigenvalue decomposition`.  
-
-- **Mathematical Foundations**:  
-  - `Set Theory` → handles `data uniqueness` and `feature spaces` via `Cartesian products`.  
-  - `Functions` (injective/surjective/bijective) → guide `transformation validity`.  
-
-- **Evaluation**:  
-  - `Accuracy_score` → evaluates `classification`, while `mean_squared_error` → evaluates `regression`.  
-  - `Balancing model complexity` → mitigates `overfitting/underfitting`.  
+This knowledge graph is designed to map the interconnected concepts and relationships within the field of **Data Science**. By structuring information as subject-predicate-object triplets, it provides a comprehensive visual and analytical framework to understand how key ideas, techniques, and domains relate to one another. The graph serves as a foundational tool for learners, educators, and practitioners to navigate the complexities of data science systematically.
 
 ---
 
-## 3. Structure Overview  
-The knowledge graph is organized into **domains**, **subdomains**, and **practical tools**, structured hierarchically and associatively:  
+## 2. Key Concepts and Relationships
 
-1. **Hierarchical Relationships** (e.g., `is-a` or `includes`):  
-   - `Probability Theory` includes `conditional probability`, `Bernoulli distribution`.  
-   - `Feature Selection Techniques` includes `filter`, `wrapper`, and `embedded methods`.  
+### Core Entities and Connections
+- **Data Science**  
+  - Defined as an **interdisciplinary field** combining:  
+    - **Statistical analysis**  
+    - **Computational algorithms**  
+    - **Domain expertise**  
+  - Encompasses the lifecycle of data:  
+    - **Data collection**, **cleaning**, **modeling**, and **interpretation**  
+  - Extracts **actionable insights** from **structured** and **unstructured data**, enabling **evidence-based decision-making** across industries like healthcare, finance, and technology.
 
-2. **Associative Relationships** (e.g., `uses`, `applied-in`, `demonstrates`):  
-   - `Bayesian Inference` → uses `Beta Prior`.  
-   - `Matplotlib` → visualizes `posterior updates`.  
+- **Machine Learning (ML)**  
+  - A **core subfield of artificial intelligence** that:  
+    - Uses **algorithms** to learn **patterns from data** and generate **models**  
+    - Models enable **prediction**, **classification**, and **decision-making** without explicit programming rules  
+  - Example: The **ML pipeline** uses the **Iris dataset** to train models that classify **flower species** based on features like **petal length** and **sepal width**.  
 
-3. **Domain-Specific Clusters**:  
-   - **Machine Learning**: Core taxonomies, algorithms (`SVC`, `LinearRegression`), and applications.  
-   - **Mathematical Foundations**: Set theory, probability, and linear algebra.  
-   - **Model Evaluation**: Metrics (precision, recall) and techniques (cross-validation).  
+- **Data Preprocessing**  
+  - Prepares raw datasets for analysis through:  
+    - **Data cleaning** (handling missing values, removing duplicates)  
+    - **Transformation** (encoding categorical variables, normalization)  
+    - **Scaling** (standardization, outlier treatment)  
+  - Techniques ensure **data quality**, reduce **bias**, and improve model **performance**.
 
-4. **Tool Integration**:  
-   - `Python sets`, `itertools.product`, and `scikit-learn` APIs (`accuracy_score`) are explicitly linked to tasks like `data filtering` and `feature engineering`.  
+- **Exploratory Data Analysis (EDA)**  
+  - A **systematic approach** to:  
+    - Summarize datasets using **statistical summaries** (mean, variance)  
+    - Visualize data with **histograms**, **scatter plots**  
+    - Uncover **structures**, **anomalies**, and **relationships**  
+  - Guides **modeling efforts** and generates **hypotheses**.
+
+- **Supervised vs. Unsupervised Learning**  
+  - **Supervised learning** uses **labeled datasets** for **classification** (discrete labels) and **regression** (continuous values).  
+  - **Unsupervised learning** identifies inherent structures via **clustering** (grouping similar instances) and **dimensionality reduction**.
 
 ---
 
-## 4. Potential Applications  
-The knowledge graph can be leveraged for:  
-- **Curriculum Design**: Mapping learning paths (e.g., starting from `set theory` → `machine learning`).  
-- **Educational Tools**: Building interactive learning platforms that recommend resources based on concept relationships.  
-- **Automated Reasoning**: Identifying gaps in knowledge or suggesting techniques (e.g., recommending `PCA` for dimensionality reduction).  
-- **Reference Framework**: Aiding practitioners in selecting appropriate models (e.g., `logistic regression` for classification) or evaluation metrics (e.g., `F1-score` for imbalanced data).  
+## 3. Structure Overview
+
+The knowledge graph is organized hierarchically and thematically, with **Data Science** at its center, branching into subdomains:  
+1. **Foundations**: Core concepts like **interdisciplinary field**, **evidence-based decision-making**.  
+2. **Machine Learning**: Subdivided into **algorithms** (SVM, KNN, RandomForest), **model capabilities** (prediction, generalization), and **pipelines**.  
+3. **Data Preparation**: Covers **data preprocessing**, **EDA**, and their subtasks.  
+4. **Modeling Techniques**: Contrasts **supervised** and **unsupervised learning** workflows.  
+
+Relationships are directional (e.g., **Models → enable adaptation to → new data**) and include:  
+- **Part-whole** (e.g., **Data Science → encompasses → data cleaning**)  
+- **Causal** (e.g., **Hyperparameters → impact → performance**)  
+- **Application** (e.g., **RandomForest → showcases → predictive modeling**).
 
 ---
 
-## 5. Summary of Triplet Count  
-The knowledge graph consists of **66 explicitly defined triplets**, with the potential for additional connections (as indicated by "... (and more)").  
+## 4. Potential Applications
 
----  
-**End of Report**
+This knowledge graph can be leveraged for:  
+1. **Educational Tools**: Designing curricula, visualizing learning paths, and assessing student understanding.  
+2. **Research**: Identifying gaps in methodologies (e.g., bias reduction in preprocessing) and exploring interdisciplinary connections.  
+3. **Industry Applications**: Building decision-support systems, optimizing workflows (e.g., EDA for hypothesis generation), and benchmarking algorithms.  
+4. **Collaboration**: Bridging terminology gaps between data scientists, domain experts, and stakeholders.  
+
+---
+
+## 5. Summary of Triplet Count
+
+The knowledge graph consists of **79 explicitly defined triplets** in this report, though the full graph may include additional relationships (indicated by "... (and more)").  
+
+--- 
+
+*End of Report*

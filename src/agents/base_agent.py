@@ -10,7 +10,9 @@ class BaseAgent(ABC):
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
         self.name = name
         self.description = description
-        self.neo4j_driver = Neo4jDriver(database=NEO4J_DATABASE) # Pass database to constructor
+        self.api_key = api_key
+        self.api_url = api_url
+        self.neo4j_driver = Neo4jDriver()
         self.mysql_driver = MySQLDriver()
         self.redis_driver = RedisDriver()
 
