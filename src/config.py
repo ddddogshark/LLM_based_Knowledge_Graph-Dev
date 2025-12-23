@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # LLM API Configuration (Generic for Qwen, DeepSeek, etc.)
-LLM_API_KEY = os.getenv("LLM_API_KEY", "YOUR_LLM_API_KEY")
+LLM_API_KEY = os.getenv("LLM_API_KEY", "3d73fa38f346421d9dc26b869a5d04307614a1d77ca949528d7c2c00c2361640")
 LLM_API_URL = os.getenv("LLM_API_URL", "https://aigc-api.hkust-gz.edu.cn/v1/chat/completions")
 LLM_MODEL = os.getenv("LLM_MODEL", "Qwen") # Default to Qwen as per user's example
 LLM_API_KEY_PREFIX = os.getenv("LLM_API_KEY_PREFIX", "") # Default to empty string for Qwen, "Bearer " for others if needed

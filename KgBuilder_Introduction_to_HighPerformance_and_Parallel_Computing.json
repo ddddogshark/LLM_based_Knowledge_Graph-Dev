@@ -1,0 +1,2282 @@
+[
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "foundational principles and techniques for developing efficient algorithms that leverage parallel processing systems"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "has key component",
+        "tail": "study of Principles of Parallel Algorithm Design"
+    },
+    {
+        "head": "Principles of Parallel Algorithm Design",
+        "relation": "emphasizes",
+        "tail": "strategies for structuring algorithms to execute tasks concurrently across multiple processors"
+    },
+    {
+        "head": "study of Principles of Parallel Algorithm Design",
+        "relation": "enables optimization of",
+        "tail": "computational performance"
+    },
+    {
+        "head": "exploiting parallelism in algorithm design and implementation",
+        "relation": "addresses",
+        "tail": "complex problems in high-performance computing environments"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "includes",
+        "tail": "educational resources such as slides"
+    },
+    {
+        "head": "slides",
+        "relation": "are adapted from",
+        "tail": "lecture notes of Introduction to Parallel Computing"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "leveraging multiple processors or cores to solve computational problems efficiently"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "covers",
+        "tail": "foundational concepts like parallel algorithms, distributed systems, and performance optimization techniques"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "are",
+        "tail": "essential components"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "used in",
+        "tail": "development of efficient algorithms"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "execute simultaneously across",
+        "tail": "multiple processors or cores"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "form part of",
+        "tail": "Parallel Programming"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "enable creation of",
+        "tail": "scalable and optimized solutions"
+    },
+    {
+        "head": "Tools for Parallel Algorithm Design",
+        "relation": "leverage",
+        "tail": "parallelism in system architectures"
+    },
+    {
+        "head": "Decomposition Techniques",
+        "relation": "are",
+        "tail": "critical component of Parallel Algorithm Design"
+    },
+    {
+        "head": "Decomposition Techniques",
+        "relation": "focus on dividing",
+        "tail": "complex computational problems into smaller independent subtasks"
+    },
+    {
+        "head": "Decomposition Techniques",
+        "relation": "are foundational in",
+        "tail": "High-Performance and Parallel Computing"
+    },
+    {
+        "head": "Decomposition Techniques",
+        "relation": "enable",
+        "tail": "efficient resource utilization, scalability, and reduced execution time"
+    },
+    {
+        "head": "Decomposition Techniques",
+        "relation": "distribute",
+        "tail": "workloads across multiple processors or computing nodes"
+    },
+    {
+        "head": "Parallel Algorithm Design",
+        "relation": "is a critical component of",
+        "tail": "high-performance and parallel computing"
+    },
+    {
+        "head": "Parallel Algorithm Design",
+        "relation": "involves",
+        "tail": "task generation and interactions"
+    },
+    {
+        "head": "task generation and interactions",
+        "relation": "encompass",
+        "tail": "creation of independent computational tasks"
+    },
+    {
+        "head": "task generation and interactions",
+        "relation": "encompass",
+        "tail": "management of dependencies or communication between them"
+    },
+    {
+        "head": "Effective parallel algorithms",
+        "relation": "optimize",
+        "tail": "task distribution"
+    },
+    {
+        "head": "Effective parallel algorithms",
+        "relation": "optimize",
+        "tail": "synchronization"
+    },
+    {
+        "head": "Effective parallel algorithms",
+        "relation": "optimize",
+        "tail": "resource allocation"
+    },
+    {
+        "head": "Effective parallel algorithms",
+        "relation": "leverage",
+        "tail": "full potential of parallel architectures"
+    },
+    {
+        "head": "Effective parallel algorithms",
+        "relation": "enable",
+        "tail": "faster execution of complex computations in fields like scientific simulations, data analysis, and machine learning"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "are a critical component of",
+        "tail": "Parallel Algorithm Design"
+    },
+    {
+        "head": "Parallel Algorithm Design",
+        "relation": "focuses on optimizing",
+        "tail": "computational efficiency in High-Performance and Parallel Computing systems"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "involve",
+        "tail": "assigning tasks to processors"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "involve",
+        "tail": "managing inter-processor communication"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "involve",
+        "tail": "balancing workloads"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "minimize",
+        "tail": "latency"
+    },
+    {
+        "head": "Mapping Techniques",
+        "relation": "maximize",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "Effective mapping strategies",
+        "relation": "impact",
+        "tail": "scalability"
+    },
+    {
+        "head": "Effective mapping strategies",
+        "relation": "impact",
+        "tail": "performance"
+    },
+    {
+        "head": "Effective mapping strategies",
+        "relation": "impact",
+        "tail": "execution speed of parallel algorithms"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "is",
+        "tail": "computational approach"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "leverages",
+        "tail": "parallel algorithm design models"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "divides",
+        "tail": "complex problems into smaller subtasks"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "is foundational in",
+        "tail": "high-performance computing"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "enables utilization of",
+        "tail": "multi-core processors"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "enables utilization of",
+        "tail": "distributed systems"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "enables utilization of",
+        "tail": "parallel architectures"
+    },
+    {
+        "head": "Parallel Programming",
+        "relation": "solves",
+        "tail": "computationally intensive problems faster than sequential execution"
+    },
+    {
+        "head": "Developing a parallel algorithm",
+        "relation": "begins with",
+        "tail": "decomposing the problem into smaller, manageable tasks"
+    },
+    {
+        "head": "Foundational step",
+        "relation": "involves",
+        "tail": "breaking down computational challenges into independent or interdependent components"
+    },
+    {
+        "head": "Effective decomposition",
+        "relation": "enables",
+        "tail": "efficient task distribution across multiple processors or cores"
+    },
+    {
+        "head": "Efficient task distribution across multiple processors or cores",
+        "relation": "is critical for optimizing",
+        "tail": "performance and scalability in high-performance computing environments"
+    },
+    {
+        "head": "Quality of initial phase",
+        "relation": "impacts",
+        "tail": "algorithm's ability to leverage parallelism for faster execution"
+    },
+    {
+        "head": "Problem decomposition",
+        "relation": "is",
+        "tail": "critical concept in high-performance and parallel computing"
+    },
+    {
+        "head": "Problem decomposition",
+        "relation": "involves",
+        "tail": "breaking down complex problems into smaller, manageable tasks"
+    },
+    {
+        "head": "Problem decomposition",
+        "relation": "enhances",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "directed graph",
+        "relation": "models",
+        "tail": "task dependencies and execution relationships"
+    },
+    {
+        "head": "directed graph nodes",
+        "relation": "correspond to",
+        "tail": "tasks"
+    },
+    {
+        "head": "node",
+        "relation": "represents",
+        "tail": "individual task"
+    },
+    {
+        "head": "directed graph edges",
+        "relation": "model",
+        "tail": "dependencies between tasks"
+    },
+    {
+        "head": "edges",
+        "relation": "represent",
+        "tail": "relationships and execution order of tasks"
+    },
+    {
+        "head": "one task",
+        "relation": "depend on",
+        "tail": "completion of another"
+    },
+    {
+        "head": "structure",
+        "relation": "is critical for",
+        "tail": "scheduling and optimizing parallel workflows"
+    },
+    {
+        "head": "structure",
+        "relation": "ensures",
+        "tail": "correct task execution sequences"
+    },
+    {
+        "head": "structure",
+        "relation": "maximizes",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "Decomposition",
+        "relation": "is",
+        "tail": "foundational concept in high-performance and parallel computing"
+    },
+    {
+        "head": "Decomposition",
+        "relation": "involves",
+        "tail": "breaking down a computational problem into smaller, manageable tasks or components"
+    },
+    {
+        "head": "Decomposition",
+        "relation": "enables",
+        "tail": "identification of independent tasks"
+    },
+    {
+        "head": "independent tasks",
+        "relation": "can be executed",
+        "tail": "concurrently"
+    },
+    {
+        "head": "Decomposition",
+        "relation": "improves",
+        "tail": "efficiency"
+    },
+    {
+        "head": "directed graph",
+        "relation": "is",
+        "tail": "common example used to represent dependencies between these tasks"
+    },
+    {
+        "head": "nodes",
+        "relation": "symbolize",
+        "tail": "individual tasks"
+    },
+    {
+        "head": "edges",
+        "relation": "indicate",
+        "tail": "order or dependencies that must be respected during execution"
+    },
+    {
+        "head": "structured approach",
+        "relation": "optimizes",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "structured approach",
+        "relation": "minimizes",
+        "tail": "bottlenecks in parallel systems"
+    },
+    {
+        "head": "computational workloads",
+        "relation": "distributed across",
+        "tail": "multiple processing units or nodes"
+    },
+    {
+        "head": "relationship between nodes and tasks",
+        "relation": "fundamental to",
+        "tail": "paradigm"
+    },
+    {
+        "head": "nodes",
+        "relation": "assigned",
+        "tail": "specific tasks"
+    },
+    {
+        "head": "nodes",
+        "relation": "are",
+        "tail": "individual processing units or clustered systems"
+    },
+    {
+        "head": "correspondence",
+        "relation": "enables",
+        "tail": "efficient resource utilization"
+    },
+    {
+        "head": "correspondence",
+        "relation": "enables",
+        "tail": "parallel execution of operations"
+    },
+    {
+        "head": "correspondence",
+        "relation": "enables",
+        "tail": "scalability in solving complex computational problems"
+    },
+    {
+        "head": "task dependencies",
+        "relation": "create",
+        "tail": "directed relationship"
+    },
+    {
+        "head": "directed relationship",
+        "relation": "represented as",
+        "tail": "edges"
+    },
+    {
+        "head": "directed relationship",
+        "relation": "influences",
+        "tail": "execution order"
+    },
+    {
+        "head": "dependencies",
+        "relation": "limit",
+        "tail": "parallelism"
+    },
+    {
+        "head": "dependencies",
+        "relation": "enforce",
+        "tail": "sequential processing"
+    },
+    {
+        "head": "tasks",
+        "relation": "wait for",
+        "tail": "prerequisite results"
+    },
+    {
+        "head": "dependencies",
+        "relation": "impact",
+        "tail": "overall efficiency and scheduling strategies in parallel systems"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "represented as",
+        "tail": "directed graph"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "is",
+        "tail": "fundamental concept in high-performance and parallel computing"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "models computational tasks as",
+        "tail": "nodes"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "models dependencies between tasks as",
+        "tail": "directed edges"
+    },
+    {
+        "head": "directed edges",
+        "relation": "illustrate",
+        "tail": "required execution order"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "helps optimize",
+        "tail": "parallel task scheduling"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "identifies",
+        "tail": "independent operations"
+    },
+    {
+        "head": "task dependency graph",
+        "relation": "manages",
+        "tail": "resource allocation"
+    },
+    {
+        "head": "tasks",
+        "relation": "executed after",
+        "tail": "dependencies resolved"
+    },
+    {
+        "head": "computation of each element in output vector y",
+        "relation": "is independent of",
+        "tail": "other elements"
+    },
+    {
+        "head": "independent computation",
+        "relation": "allows",
+        "tail": "concurrent execution of computations"
+    },
+    {
+        "head": "independent computation",
+        "relation": "enables",
+        "tail": "efficient parallel processing"
+    },
+    {
+        "head": "independent computation",
+        "relation": "enables",
+        "tail": "optimized performance in computational tasks"
+    },
+    {
+        "head": "dense matrix-vector product",
+        "relation": "involves multiplying",
+        "tail": "dense matrix and vector"
+    },
+    {
+        "head": "dense matrix-vector product",
+        "relation": "can be decomposed into",
+        "tail": "n independent tasks"
+    },
+    {
+        "head": "each task",
+        "relation": "computes",
+        "tail": "single element of resulting vector"
+    },
+    {
+        "head": "decomposition",
+        "relation": "is foundational for",
+        "tail": "parallel computing"
+    },
+    {
+        "head": "decomposition",
+        "relation": "allows distribution of",
+        "tail": "computational workloads across multiple processors or cores"
+    },
+    {
+        "head": "distribution of computational workloads across multiple processors or cores",
+        "relation": "improves",
+        "tail": "efficiency in high-performance computing environments"
+    },
+    {
+        "head": "tasks in parallel computing systems",
+        "relation": "access",
+        "tail": "distinct portions of matrices and vectors"
+    },
+    {
+        "head": "accessing distinct portions of matrices and vectors",
+        "relation": "enables",
+        "tail": "concurrent processing"
+    },
+    {
+        "head": "data structures",
+        "relation": "divided into",
+        "tail": "smaller segments"
+    },
+    {
+        "head": "computational workloads",
+        "relation": "distributed across",
+        "tail": "multiple processing units"
+    },
+    {
+        "head": "distributing computational workloads across multiple processing units",
+        "relation": "optimizes",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "distributing computational workloads across multiple processing units",
+        "relation": "reduces",
+        "tail": "execution time"
+    },
+    {
+        "head": "Matrix and Vector Partitioning in Parallel Computing",
+        "relation": "is fundamental in",
+        "tail": "high-performance computing"
+    },
+    {
+        "head": "Matrix and Vector Partitioning in Parallel Computing",
+        "relation": "solves",
+        "tail": "large-scale numerical problems"
+    },
+    {
+        "head": "Matrix and Vector Partitioning in Parallel Computing",
+        "relation": "uses",
+        "tail": "data decomposition and task parallelism"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "focuses on leveraging",
+        "tail": "advanced computational techniques to optimize performance through parallelism"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "encompasses",
+        "tail": "parallel algorithms"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "encompasses",
+        "tail": "distributed computing systems"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "encompasses",
+        "tail": "high-performance architectures"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "has illustrative example",
+        "tail": "Database Query Processing"
+    },
+    {
+        "head": "parallel computing methods",
+        "relation": "accelerate",
+        "tail": "data retrieval and analysis"
+    },
+    {
+        "head": "parallel computing methods",
+        "relation": "distribute tasks across",
+        "tail": "multiple processors or nodes"
+    },
+    {
+        "head": "query executed on a database",
+        "relation": "filters data based on",
+        "tail": "specific criteria such as model (e.g., CIVIC), year (e.g., 2001), and color (e.g., GREEN, WHITE)"
+    },
+    {
+        "head": "Logical operators like AND and OR",
+        "relation": "combine",
+        "tail": "filters"
+    },
+    {
+        "head": "Logical operators like AND and OR",
+        "relation": "enable",
+        "tail": "precise data retrieval by applying multiple conditions simultaneously"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "ID#"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "Model"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "Year"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "Color"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "Dealer"
+    },
+    {
+        "head": "Database structure",
+        "relation": "includes",
+        "tail": "Price"
+    },
+    {
+        "head": "record with ID# 4523",
+        "relation": "model",
+        "tail": "Civic"
+    },
+    {
+        "head": "record with ID# 4523",
+        "relation": "manufactured in",
+        "tail": "2002"
+    },
+    {
+        "head": "record with ID# 4523",
+        "relation": "available in color",
+        "tail": "Blu"
+    },
+    {
+        "head": "Civic model 4523",
+        "relation": "is",
+        "tail": "vehicle"
+    },
+    {
+        "head": "Civic model 4523",
+        "relation": "produced in",
+        "tail": "MN"
+    },
+    {
+        "head": "Civic model 4523",
+        "relation": "produced in",
+        "tail": "2002"
+    },
+    {
+        "head": "Civic model 4523",
+        "relation": "color",
+        "tail": "blue"
+    },
+    {
+        "head": "Civic model 4523",
+        "relation": "priced at",
+        "tail": "$18,000"
+    },
+    {
+        "head": "entity 3476",
+        "relation": "is",
+        "tail": "Corolla model vehicle"
+    },
+    {
+        "head": "entity 3476",
+        "relation": "produced in",
+        "tail": "1999"
+    },
+    {
+        "head": "entity 3476",
+        "relation": "produced in",
+        "tail": "Illinois"
+    },
+    {
+        "head": "entity 3476",
+        "relation": "color",
+        "tail": "white"
+    },
+    {
+        "head": "entity 3476",
+        "relation": "priced at",
+        "tail": "$15,000"
+    },
+    {
+        "head": "7623",
+        "relation": "refers to",
+        "tail": "2001 Toyota Camry"
+    },
+    {
+        "head": "7623",
+        "relation": "produced in",
+        "tail": "New York"
+    },
+    {
+        "head": "7623",
+        "relation": "color",
+        "tail": "green"
+    },
+    {
+        "head": "7623",
+        "relation": "priced at",
+        "tail": "$21,000"
+    },
+    {
+        "head": "7623",
+        "relation": "year",
+        "tail": "2001"
+    },
+    {
+        "head": "Prius (Model 9834)",
+        "relation": "produced in",
+        "tail": "California"
+    },
+    {
+        "head": "Prius (Model 9834)",
+        "relation": "year",
+        "tail": "2001"
+    },
+    {
+        "head": "Prius (Model 9834)",
+        "relation": "color",
+        "tail": "green"
+    },
+    {
+        "head": "Prius (Model 9834)",
+        "relation": "priced at",
+        "tail": "$18,000"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "is",
+        "tail": "2001 Nissan Altima"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "produced in",
+        "tail": "Florida"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "priced at",
+        "tail": "$19,000"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "features",
+        "tail": "green exterior color"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "mentions",
+        "tail": "green"
+    },
+    {
+        "head": "VIN 5342",
+        "relation": "mentions variations",
+        "tail": "WhiteGreenGreen"
+    },
+    {
+        "head": "3845",
+        "relation": "model",
+        "tail": "Maxima"
+    },
+    {
+        "head": "3845",
+        "relation": "produced in",
+        "tail": "New York"
+    },
+    {
+        "head": "3845",
+        "relation": "production year",
+        "tail": "2001"
+    },
+    {
+        "head": "3845",
+        "relation": "color",
+        "tail": "blue"
+    },
+    {
+        "head": "3845",
+        "relation": "priced at",
+        "tail": "$22,000"
+    },
+    {
+        "head": "3845",
+        "relation": "is",
+        "tail": "product"
+    },
+    {
+        "head": "3845",
+        "relation": "corresponds to",
+        "tail": "Maxima model"
+    },
+    {
+        "head": "3845",
+        "relation": "manufactured in",
+        "tail": "2001"
+    },
+    {
+        "head": "3845",
+        "relation": "manufactured in",
+        "tail": "New York (NY)"
+    },
+    {
+        "head": "3845",
+        "relation": "has color",
+        "tail": "blue"
+    },
+    {
+        "head": "3845",
+        "relation": "priced at",
+        "tail": "$22,000"
+    },
+    {
+        "head": "8354",
+        "relation": "associated with",
+        "tail": "model Accord"
+    },
+    {
+        "head": "8354",
+        "relation": "manufactured in",
+        "tail": "2000"
+    },
+    {
+        "head": "8354",
+        "relation": "manufactured in",
+        "tail": "VT"
+    },
+    {
+        "head": "8354",
+        "relation": "priced at",
+        "tail": "$18,000"
+    },
+    {
+        "head": "8354",
+        "relation": "has color option",
+        "tail": "Green"
+    },
+    {
+        "head": "8354",
+        "relation": "has color option",
+        "tail": "WhiteGreenGreen"
+    },
+    {
+        "head": "4395",
+        "relation": "model",
+        "tail": "Honda Civic"
+    },
+    {
+        "head": "4395",
+        "relation": "manufacturing location",
+        "tail": "California"
+    },
+    {
+        "head": "4395",
+        "relation": "production year",
+        "tail": "2001"
+    },
+    {
+        "head": "4395",
+        "relation": "color",
+        "tail": "red"
+    },
+    {
+        "head": "4395",
+        "relation": "market value",
+        "tail": "$17,000"
+    },
+    {
+        "head": "7352",
+        "relation": "model",
+        "tail": "Honda Civic"
+    },
+    {
+        "head": "7352",
+        "relation": "manufacturing location",
+        "tail": "Washington State"
+    },
+    {
+        "head": "7352",
+        "relation": "production year",
+        "tail": "2002"
+    },
+    {
+        "head": "7352",
+        "relation": "color",
+        "tail": "red"
+    },
+    {
+        "head": "7352",
+        "relation": "market value",
+        "tail": "$18,000"
+    },
+    {
+        "head": "This course",
+        "relation": "explores",
+        "tail": "foundational concepts in high-performance and parallel computing"
+    },
+    {
+        "head": "It",
+        "relation": "includes",
+        "tail": "practical examples such as database query processing"
+    },
+    {
+        "head": "database query processing",
+        "relation": "demonstrates",
+        "tail": "how to handle complex data operations efficiently"
+    },
+    {
+        "head": "The curriculum",
+        "relation": "emphasizes",
+        "tail": "parallelism"
+    },
+    {
+        "head": "The curriculum",
+        "relation": "emphasizes",
+        "tail": "distributed systems"
+    },
+    {
+        "head": "The curriculum",
+        "relation": "emphasizes",
+        "tail": "methods to enhance computational performance for large-scale problems"
+    },
+    {
+        "head": "Decomposing query execution into smaller subtasks",
+        "relation": "allows for",
+        "tail": "concurrent processing"
+    },
+    {
+        "head": "This approach",
+        "relation": "enhances",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "This approach",
+        "relation": "enables",
+        "tail": "multiple subtasks to be executed simultaneously"
+    },
+    {
+        "head": "This approach",
+        "relation": "leverages",
+        "tail": "parallel architectures"
+    },
+    {
+        "head": "parallel architectures",
+        "relation": "reduce",
+        "tail": "overall processing time"
+    },
+    {
+        "head": "parallel architectures",
+        "relation": "optimize",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "tasks",
+        "relation": "are executed on",
+        "tail": "intermediate data structures"
+    },
+    {
+        "head": "intermediate data structures",
+        "relation": "such as",
+        "tail": "tables"
+    },
+    {
+        "head": "tables",
+        "relation": "containing",
+        "tail": "entries"
+    },
+    {
+        "head": "entries",
+        "relation": "meet",
+        "tail": "filtering criteria"
+    },
+    {
+        "head": "entries",
+        "relation": "meet",
+        "tail": "clauses"
+    },
+    {
+        "head": "This approach",
+        "relation": "enables",
+        "tail": "efficient processing"
+    },
+    {
+        "head": "This approach",
+        "relation": "focuses on",
+        "tail": "computational resources on relevant subsets of data"
+    },
+    {
+        "head": "This approach",
+        "relation": "optimizes",
+        "tail": "resource allocation"
+    },
+    {
+        "head": "This approach",
+        "relation": "optimizes",
+        "tail": "execution speed"
+    },
+    {
+        "head": "use of intermediate tables",
+        "relation": "ensures",
+        "tail": "operations are performed on data"
+    },
+    {
+        "head": "data",
+        "relation": "satisfies",
+        "tail": "predefined conditions"
+    },
+    {
+        "head": "use of intermediate tables",
+        "relation": "enhances",
+        "tail": "scalability"
+    },
+    {
+        "head": "use of intermediate tables",
+        "relation": "enhances",
+        "tail": "performance in distributed environments"
+    },
+    {
+        "head": "4523 6734",
+        "relation": "is associated with",
+        "tail": "Civic Civic"
+    },
+    {
+        "head": "relationship",
+        "relation": "indicates",
+        "tail": "structural connection"
+    },
+    {
+        "head": "relationship",
+        "relation": "indicates",
+        "tail": "categorical connection"
+    },
+    {
+        "head": "connection",
+        "relation": "between",
+        "tail": "subject and model"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "linked to",
+        "tail": "20012001200120012001"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "foundational principles and techniques for optimizing computational performance through parallel processing, distributed systems, and advanced architectures designed to solve large-scale computational problems efficiently"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "provides introduction to",
+        "tail": "High-Performance and Parallel Computing"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "leveraging advanced computing systems to solve complex computational problems"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "covers",
+        "tail": "foundational concepts and techniques aimed at improving computational efficiency and performance"
+    },
+    {
+        "head": "Introduction to High-Performance and Parallel Computing",
+        "relation": "associated with",
+        "tail": "year 2001"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "involves",
+        "tail": "using advanced computational methods and systems to solve complex problems efficiently"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "leverages",
+        "tail": "powerful hardware"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "leverages",
+        "tail": "optimized algorithms"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "processes",
+        "tail": "vast datasets at high speeds"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "performs",
+        "tail": "simulations at high speeds"
+    },
+    {
+        "head": "Parallel Computing",
+        "relation": "divides",
+        "tail": "tasks into smaller subtasks"
+    },
+    {
+        "head": "Parallel Computing",
+        "relation": "executes",
+        "tail": "subtasks simultaneously across multiple processors"
+    },
+    {
+        "head": "Parallel Computing",
+        "relation": "executes",
+        "tail": "subtasks simultaneously across multiple cores"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "enable",
+        "tail": "breakthroughs in scientific research"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "enable",
+        "tail": "breakthroughs in engineering"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "enable",
+        "tail": "breakthroughs in data analysis"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "maximize",
+        "tail": "computational resources"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "reduce",
+        "tail": "execution time"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "handle",
+        "tail": "large-scale workloads"
+    },
+    {
+        "head": "34767623",
+        "relation": "is associated with",
+        "tail": "WhiteGreen"
+    },
+    {
+        "head": "Civic model with ID# 6734",
+        "relation": "is a",
+        "tail": "vehicle specification"
+    },
+    {
+        "head": "Civic model with ID# 6734",
+        "relation": "from the year",
+        "tail": "2001"
+    },
+    {
+        "head": "Civic model with ID# 6734",
+        "relation": "characterized by",
+        "tail": "white color"
+    },
+    {
+        "head": "edges",
+        "relation": "represent",
+        "tail": "dependencies between tasks"
+    },
+    {
+        "head": "completion of one task",
+        "relation": "is necessary before",
+        "tail": "proceeding to the next task"
+    },
+    {
+        "head": "edges",
+        "relation": "are fundamental in structuring",
+        "tail": "computational workflows"
+    },
+    {
+        "head": "edges",
+        "relation": "determine",
+        "tail": "task sequencing"
+    },
+    {
+        "head": "edges",
+        "relation": "influence",
+        "tail": "efficiency of parallel execution"
+    },
+    {
+        "head": "edges",
+        "relation": "define",
+        "tail": "prerequisite relationships"
+    },
+    {
+        "head": "prerequisite relationships",
+        "relation": "must be respected during",
+        "tail": "scheduling"
+    },
+    {
+        "head": "knowledge point",
+        "relation": "introduces",
+        "tail": "foundational concepts of high-performance and parallel computing"
+    },
+    {
+        "head": "knowledge point",
+        "relation": "focuses on",
+        "tail": "techniques to optimize computational efficiency through parallelism"
+    },
+    {
+        "head": "high-performance and parallel computing",
+        "relation": "has key component",
+        "tail": "algorithm design"
+    },
+    {
+        "head": "algorithm design",
+        "relation": "addresses",
+        "tail": "strategies for structuring computations to leverage distributed systems and parallel processing frameworks"
+    },
+    {
+        "head": "high-performance and parallel computing",
+        "relation": "aims to solve",
+        "tail": "complex problems in domains like scientific simulations, big data analysis, and real-time processing"
+    },
+    {
+        "head": "high-performance and parallel computing",
+        "relation": "distributes workloads",
+        "tail": "across multiple processors or nodes"
+    },
+    {
+        "head": "course",
+        "relation": "provides",
+        "tail": "foundational knowledge in High-Performance and Parallel Computing"
+    },
+    {
+        "head": "course",
+        "relation": "focuses on",
+        "tail": "key concepts and principles essential for understanding parallel computing fundamentals"
+    },
+    {
+        "head": "course",
+        "relation": "serves as",
+        "tail": "entry point to explore techniques for optimizing computational performance and leveraging parallelism in problem-solving"
+    },
+    {
+        "head": "This course",
+        "relation": "introduces",
+        "tail": "foundational principles of High-Performance and Parallel Computing"
+    },
+    {
+        "head": "This course",
+        "relation": "emphasizes",
+        "tail": "application in optimizing computational tasks"
+    },
+    {
+        "head": "This course",
+        "relation": "explores",
+        "tail": "enhancement of database query processing by parallelism and distributed systems"
+    },
+    {
+        "head": "parallelism and distributed systems",
+        "relation": "enhance",
+        "tail": "database query processing"
+    },
+    {
+        "head": "Students",
+        "relation": "gain insights into",
+        "tail": "leveraging computational resources to improve performance in data-intensive applications"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "are",
+        "tail": "interconnected fields focused on optimizing computational efficiency and solving complex problems"
+    },
+    {
+        "head": "Parallel Computing",
+        "relation": "involves",
+        "tail": "executing multiple tasks simultaneously"
+    },
+    {
+        "head": "Parallel Computing",
+        "relation": "leverages",
+        "tail": "parallelism to accelerate computations"
+    },
+    {
+        "head": "HPC",
+        "relation": "utilizes",
+        "tail": "parallel computing methods to achieve high-speed processing for large-scale simulations and data-intensive applications"
+    },
+    {
+        "head": "High-Performance Computing and Parallel Computing",
+        "relation": "form",
+        "tail": "foundation for modern computational advancements in science, engineering, and technology"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "principles and techniques for developing efficient algorithms and systems to solve complex computational problems using parallel processing and distributed architectures"
+    },
+    {
+        "head": "A key component",
+        "relation": "is",
+        "tail": "algorithm design"
+    },
+    {
+        "head": "algorithm design",
+        "relation": "emphasizes optimizing performance through strategies like",
+        "tail": "concurrency, data distribution, and synchronization"
+    },
+    {
+        "head": "High-Performance and Parallel Computing",
+        "relation": "focuses on",
+        "tail": "solving complex computational problems by decomposing them into smaller, manageable subtasks that can be processed concurrently"
+    },
+    {
+        "head": "This approach",
+        "relation": "leverages",
+        "tail": "multiple processors, cores, or distributed systems"
+    },
+    {
+        "head": "This approach",
+        "relation": "enhances",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "This approach",
+        "relation": "reduces",
+        "tail": "execution time"
+    },
+    {
+        "head": "This approach",
+        "relation": "tackles",
+        "tail": "large-scale challenges"
+    },
+    {
+        "head": "large-scale challenges",
+        "relation": "include",
+        "tail": "scientific simulations, big data analysis, and real-time processing"
+    },
+    {
+        "head": "Key concepts",
+        "relation": "include",
+        "tail": "task decomposition, parallel algorithms, load balancing, and inter-process communication"
+    },
+    {
+        "head": "task decomposition, parallel algorithms, load balancing, and inter-process communication",
+        "relation": "aimed at optimizing",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "task decomposition, parallel algorithms, load balancing, and inter-process communication",
+        "relation": "aimed at achieving",
+        "tail": "scalable performance"
+    },
+    {
+        "head": "Car 6734",
+        "relation": "identified by",
+        "tail": "ID number 6734"
+    },
+    {
+        "head": "Car 6734",
+        "relation": "belongs to",
+        "tail": "Civic model category"
+    },
+    {
+        "head": "Car 6734",
+        "relation": "manufactured in",
+        "tail": "2001"
+    },
+    {
+        "head": "Car 6734",
+        "relation": "has",
+        "tail": "white exterior color"
+    },
+    {
+        "head": "Alternate Decomposition",
+        "relation": "is a method used in",
+        "tail": "High-Performance and Parallel Computing"
+    },
+    {
+        "head": "Alternate Decomposition",
+        "relation": "breaks down complex computational tasks into",
+        "tail": "smaller, manageable subtasks"
+    },
+    {
+        "head": "Alternate Decomposition",
+        "relation": "allows for parallel execution of subtasks across",
+        "tail": "multiple processors or cores"
+    },
+    {
+        "head": "Alternate Decomposition",
+        "relation": "optimizes",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "Alternate Decomposition",
+        "relation": "improves",
+        "tail": "processing efficiency"
+    },
+    {
+        "head": "tasks",
+        "relation": "decomposed into",
+        "tail": "smaller subtasks"
+    },
+    {
+        "head": "subtasks",
+        "relation": "exhibit",
+        "tail": "data dependencies"
+    },
+    {
+        "head": "output or state of one subtask",
+        "relation": "required as input for",
+        "tail": "another subtask"
+    },
+    {
+        "head": "Managing data dependencies",
+        "relation": "critical to ensure",
+        "tail": "correct execution order"
+    },
+    {
+        "head": "Managing data dependencies",
+        "relation": "critical to avoid",
+        "tail": "race conditions"
+    },
+    {
+        "head": "Managing data dependencies",
+        "relation": "critical to optimize",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "Techniques",
+        "relation": "include",
+        "tail": "dependency graphs"
+    },
+    {
+        "head": "Techniques",
+        "relation": "include",
+        "tail": "synchronization protocols"
+    },
+    {
+        "head": "Techniques",
+        "relation": "include",
+        "tail": "task scheduling algorithms"
+    },
+    {
+        "head": "Techniques",
+        "relation": "are employed to address",
+        "tail": "these challenges"
+    },
+    {
+        "head": "Techniques",
+        "relation": "impact",
+        "tail": "scalability"
+    },
+    {
+        "head": "Techniques",
+        "relation": "impact",
+        "tail": "performance of parallel systems"
+    },
+    {
+        "head": "Task decomposition",
+        "relation": "is a foundational concept in",
+        "tail": "parallel computing"
+    },
+    {
+        "head": "Task decomposition",
+        "relation": "involves breaking down",
+        "tail": "computational tasks into smaller units"
+    },
+    {
+        "head": "smaller units",
+        "relation": "can be executed",
+        "tail": "concurrently"
+    },
+    {
+        "head": "choice of decomposition strategy",
+        "relation": "influences",
+        "tail": "parallel performance"
+    },
+    {
+        "head": "different approaches",
+        "relation": "lead to variations in",
+        "tail": "execution efficiency"
+    },
+    {
+        "head": "different approaches",
+        "relation": "lead to variations in",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "different approaches",
+        "relation": "lead to variations in",
+        "tail": "scalability"
+    },
+    {
+        "head": "Effective task decomposition",
+        "relation": "minimizes",
+        "tail": "bottlenecks"
+    },
+    {
+        "head": "Effective task decomposition",
+        "relation": "minimizes",
+        "tail": "communication overhead"
+    },
+    {
+        "head": "bottlenecks and communication overhead",
+        "relation": "are critical for achieving",
+        "tail": "optimal performance in high-performance computing environments"
+    },
+    {
+        "head": "Granularity of task decompositions",
+        "relation": "determines",
+        "tail": "number of tasks generated in a parallel computing system"
+    },
+    {
+        "head": "Finer granularity",
+        "relation": "results in",
+        "tail": "more tasks with smaller workloads"
+    },
+    {
+        "head": "Coarser granularity",
+        "relation": "produces",
+        "tail": "fewer, larger tasks"
+    },
+    {
+        "head": "Granularity of task decompositions",
+        "relation": "is critical for optimizing",
+        "tail": "parallelism"
+    },
+    {
+        "head": "Granularity of task decompositions",
+        "relation": "is critical for balancing",
+        "tail": "computational loads"
+    },
+    {
+        "head": "Granularity of task decompositions",
+        "relation": "is critical for managing",
+        "tail": "resource allocation"
+    },
+    {
+        "head": "Task Decomposition",
+        "relation": "refers to",
+        "tail": "foundational course"
+    },
+    {
+        "head": "foundational course",
+        "relation": "introduces",
+        "tail": "principles of parallel computing"
+    },
+    {
+        "head": "Task Decomposition",
+        "relation": "focuses on breaking down",
+        "tail": "complex computational problems into smaller, manageable tasks"
+    },
+    {
+        "head": "Task Decomposition",
+        "relation": "enhances",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "Task Decomposition",
+        "relation": "enhances",
+        "tail": "performance"
+    },
+    {
+        "head": "Task Decomposition",
+        "relation": "distributes",
+        "tail": "tasks across multiple processing units in high-performance computing environments"
+    },
+    {
+        "head": "granularity",
+        "relation": "refers to",
+        "tail": "size of tasks within a decomposition process"
+    },
+    {
+        "head": "granularity",
+        "relation": "determines",
+        "tail": "computational workloads divided into smaller, manageable units for concurrent execution"
+    },
+    {
+        "head": "larger granularity",
+        "relation": "implies",
+        "tail": "fewer, coarser tasks with reduced communication overhead but potentially limited parallelism"
+    },
+    {
+        "head": "smaller granularity",
+        "relation": "involves",
+        "tail": "finer tasks that enable higher parallelism but may increase coordination and synchronization costs"
+    },
+    {
+        "head": "Balancing granularity",
+        "relation": "is critical for",
+        "tail": "optimizing performance and resource utilization in parallel systems"
+    },
+    {
+        "head": "Fine-grained decomposition",
+        "relation": "is a strategy in",
+        "tail": "high-performance and parallel computing"
+    },
+    {
+        "head": "computational problem",
+        "relation": "is divided into",
+        "tail": "large number of small, independent tasks"
+    },
+    {
+        "head": "tasks",
+        "relation": "are executed across",
+        "tail": "multiple processors or cores"
+    },
+    {
+        "head": "tasks",
+        "relation": "enable",
+        "tail": "efficient utilization of parallel resources"
+    },
+    {
+        "head": "tasks",
+        "relation": "enhance",
+        "tail": "computational performance through distributed processing"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "is",
+        "tail": "a strategy in high-performance and parallel computing"
+    },
+    {
+        "head": "computational workloads",
+        "relation": "are divided into",
+        "tail": "fewer, larger tasks"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "prioritizes",
+        "tail": "executing a reduced number of substantial tasks rather than many smaller ones"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "aims to minimize",
+        "tail": "communication overhead"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "reduces",
+        "tail": "synchronization costs"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "improves",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "consolidating tasks into larger units",
+        "relation": "enhances",
+        "tail": "efficiency in distributed or parallel systems"
+    },
+    {
+        "head": "managing fine-grained tasks",
+        "relation": "leads to",
+        "tail": "performance bottlenecks"
+    },
+    {
+        "head": "Task granularity",
+        "relation": "refers to",
+        "tail": "the size of individual tasks"
+    },
+    {
+        "head": "computational problem",
+        "relation": "is divided into",
+        "tail": "individual tasks in parallel computing systems"
+    },
+    {
+        "head": "Task granularity",
+        "relation": "determines",
+        "tail": "communication overhead"
+    },
+    {
+        "head": "finer granularity",
+        "relation": "requires",
+        "tail": "more frequent data exchange between processors"
+    },
+    {
+        "head": "more frequent data exchange",
+        "relation": "increases",
+        "tail": "overhead"
+    },
+    {
+        "head": "coarser granularity",
+        "relation": "reduces",
+        "tail": "communication needs"
+    },
+    {
+        "head": "coarser granularity",
+        "relation": "may lead to",
+        "tail": "load imbalance"
+    },
+    {
+        "head": "Optimal task granularity",
+        "relation": "balances",
+        "tail": "communication overhead and computational efficiency"
+    },
+    {
+        "head": "Optimal task granularity",
+        "relation": "maximizes",
+        "tail": "performance of parallel systems"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "focuses on leveraging",
+        "tail": "advanced computational methods"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "uses",
+        "tail": "task decomposition strategies"
+    },
+    {
+        "head": "task decomposition strategies",
+        "relation": "involve breaking down",
+        "tail": "large-scale computational tasks"
+    },
+    {
+        "head": "task decomposition strategies",
+        "relation": "break down into",
+        "tail": "smaller, independent units"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "improves",
+        "tail": "processing speed"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "improves",
+        "tail": "resource efficiency"
+    },
+    {
+        "head": "High-Performance Computing",
+        "relation": "enables handling of",
+        "tail": "demanding applications in scientific simulations, engineering, and big data analytics"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "is",
+        "tail": "a strategy in parallel computing"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "breaks down",
+        "tail": "computational problems into small, independent tasks"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "maximizes",
+        "tail": "parallelism"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "enables",
+        "tail": "simultaneous execution of multiple tasks"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "improves",
+        "tail": "efficiency and scalability in high-performance computing environments"
+    },
+    {
+        "head": "Finegrained decomposition",
+        "relation": "introduces",
+        "tail": "challenges such as increased communication overhead and complexity in task management"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "refers to",
+        "tail": "breaking down computational problems into larger tasks in parallel computing"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "divides",
+        "tail": "workloads into substantial, independent units"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "minimizes",
+        "tail": "communication overhead between tasks"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "improves",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "enhances",
+        "tail": "scalability"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "reduces",
+        "tail": "synchronization costs"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "optimizes",
+        "tail": "task granularity"
+    },
+    {
+        "head": "Coarse-grained decomposition",
+        "relation": "achieves",
+        "tail": "high performance in distributed or parallel systems"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "illustrates",
+        "tail": "distribution of computational tasks for efficiency"
+    },
+    {
+        "head": "Each task",
+        "relation": "assigned to compute",
+        "tail": "three elements of the result vector"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "enables",
+        "tail": "parallel execution"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "divides",
+        "tail": "workload across multiple processing units"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "optimizes",
+        "tail": "performance"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "minimizes",
+        "tail": "idle time"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "maximizes",
+        "tail": "concurrent computation"
+    },
+    {
+        "head": "dense matrix-vector product example",
+        "relation": "handles",
+        "tail": "large-scale numerical operations in parallel systems"
+    },
+    {
+        "head": "Degree of Concurrency",
+        "relation": "refers to",
+        "tail": "number of tasks that can be executed in parallel within a computing system"
+    },
+    {
+        "head": "Degree of Concurrency",
+        "relation": "is central to",
+        "tail": "high-performance and parallel computing"
+    },
+    {
+        "head": "Degree of Concurrency",
+        "relation": "quantifies",
+        "tail": "system's ability to handle multiple operations simultaneously"
+    },
+    {
+        "head": "Degree of Concurrency",
+        "relation": "optimizes",
+        "tail": "efficiency"
+    },
+    {
+        "head": "Degree of Concurrency",
+        "relation": "reduces",
+        "tail": "execution time for complex computational problems"
+    },
+    {
+        "head": "decomposition",
+        "relation": "involves",
+        "tail": "breaking down a computational problem into smaller tasks"
+    },
+    {
+        "head": "decomposition",
+        "relation": "enables",
+        "tail": "parallel execution"
+    },
+    {
+        "head": "degree of concurrency of a decomposition",
+        "relation": "is determined by",
+        "tail": "maximum number of these tasks that can be executed simultaneously"
+    },
+    {
+        "head": "degree of concurrency",
+        "relation": "reflects",
+        "tail": "potential for parallel processing"
+    },
+    {
+        "head": "degree of concurrency",
+        "relation": "influences",
+        "tail": "overall efficiency of high-performance computing systems"
+    },
+    {
+        "head": "maximum degree of concurrency",
+        "relation": "refers to",
+        "tail": "highest number of tasks that can be executed simultaneously at any point during program execution"
+    },
+    {
+        "head": "maximum degree of concurrency",
+        "relation": "is critical in",
+        "tail": "high-performance and parallel computing"
+    },
+    {
+        "head": "maximum degree of concurrency",
+        "relation": "defines",
+        "tail": "upper bound of parallelism achievable in a system"
+    },
+    {
+        "head": "average degree of concurrency",
+        "relation": "is",
+        "tail": "concept in parallel computing"
+    },
+    {
+        "head": "average degree of concurrency",
+        "relation": "refers to",
+        "tail": "maximum number of tasks that can be executed simultaneously at any given point during the execution of a program"
+    },
+    {
+        "head": "average degree of concurrency",
+        "relation": "is crucial for",
+        "tail": "understanding the potential parallelism within a computational workload"
+    },
+    {
+        "head": "average degree of concurrency",
+        "relation": "indicates",
+        "tail": "how effectively a program can utilize multiple processors or cores"
+    },
+    {
+        "head": "average degree of concurrency",
+        "relation": "suggests",
+        "tail": "greater opportunities for performance optimization through parallel processing"
+    },
+    {
+        "head": "parallel processing",
+        "relation": "is essential in",
+        "tail": "high-performance computing environments where maximizing resource utilization is key to reducing execution time"
+    },
+    {
+        "head": "degree of concurrency",
+        "relation": "refers to",
+        "tail": "number of tasks that can be executed simultaneously"
+    },
+    {
+        "head": "degree of concurrency",
+        "relation": "is influenced by",
+        "tail": "decomposition granularity of a computational problem"
+    },
+    {
+        "head": "finer decomposition granularity",
+        "relation": "increases",
+        "tail": "degree of concurrency"
+    },
+    {
+        "head": "finer decomposition granularity",
+        "relation": "enables",
+        "tail": "greater parallelism"
+    },
+    {
+        "head": "directed path in a task dependency graph",
+        "relation": "represents",
+        "tail": "sequence of tasks"
+    },
+    {
+        "head": "subsequent task",
+        "relation": "depends on",
+        "tail": "completion of previous one"
+    },
+    {
+        "head": "dependency",
+        "relation": "enforces",
+        "tail": "strict execution order"
+    },
+    {
+        "head": "strict execution order",
+        "relation": "requires",
+        "tail": "tasks to be processed sequentially"
+    },
+    {
+        "head": "potential for parallelism",
+        "relation": "exists in",
+        "tail": "other parts of the system"
+    },
+    {
+        "head": "understanding directed paths",
+        "relation": "is critical for",
+        "tail": "optimizing task scheduling"
+    },
+    {
+        "head": "understanding directed paths",
+        "relation": "is critical for",
+        "tail": "identifying bottlenecks"
+    },
+    {
+        "head": "Longest path in a task dependency graph",
+        "relation": "represents",
+        "tail": "sequence of tasks that must be executed sequentially due to interdependencies"
+    },
+    {
+        "head": "Critical path",
+        "relation": "determines",
+        "tail": "minimum possible execution time for a program when executed in parallel"
+    },
+    {
+        "head": "duration of the longest path",
+        "relation": "establishes",
+        "tail": "theoretical lower bound for program completion"
+    },
+    {
+        "head": "optimization of the longest path",
+        "relation": "is crucial for",
+        "tail": "improving parallel efficiency and computational performance"
+    },
+    {
+        "head": "critical path length",
+        "relation": "refers to",
+        "tail": "length of the longest path in a task dependency graph"
+    },
+    {
+        "head": "critical path length",
+        "relation": "determines",
+        "tail": "minimum possible execution time for a set of tasks"
+    },
+    {
+        "head": "tasks along the critical path",
+        "relation": "must be executed",
+        "tail": "sequentially"
+    },
+    {
+        "head": "Understanding critical path length",
+        "relation": "helps in optimizing",
+        "tail": "task scheduling"
+    },
+    {
+        "head": "Understanding critical path length",
+        "relation": "helps in improving",
+        "tail": "computational efficiency"
+    },
+    {
+        "head": "longest path",
+        "relation": "refers to",
+        "tail": "critical sequence of dependent tasks in a computational workflow"
+    },
+    {
+        "head": "longest path",
+        "relation": "determines",
+        "tail": "shortest possible parallel execution time"
+    },
+    {
+        "head": "longest path",
+        "relation": "represents",
+        "tail": "minimum duration required to complete the entire computation"
+    },
+    {
+        "head": "critical path length",
+        "relation": "refers to",
+        "tail": "longest path in a task dependency graph"
+    },
+    {
+        "head": "critical path length",
+        "relation": "determines",
+        "tail": "minimum time required to complete a project or set of tasks"
+    },
+    {
+        "head": "critical path length",
+        "relation": "is vital in",
+        "tail": "parallel computing and project scheduling"
+    },
+    {
+        "head": "critical path length",
+        "relation": "highlights",
+        "tail": "sequence of dependent tasks that cannot be parallelized"
+    },
+    {
+        "head": "critical path length",
+        "relation": "dictates",
+        "tail": "overall completion time"
+    },
+    {
+        "head": "Parallel Time Optimization",
+        "relation": "via",
+        "tail": "Finer Decomposition Granularity"
+    },
+    {
+        "head": "parallel time",
+        "relation": "refers to",
+        "tail": "execution duration required to complete tasks concurrently"
+    },
+    {
+        "head": "parallel time",
+        "relation": "can be reduced by",
+        "tail": "finer decomposition granularity"
+    },
+    {
+        "head": "finer decomposition granularity",
+        "relation": "involves",
+        "tail": "splitting computational tasks into smaller subtasks"
+    },
+    {
+        "head": "distributing subtasks across parallel processing units",
+        "relation": "utilizes",
+        "tail": "system resources more efficiently"
+    },
+    {
+        "head": "utilizing system resources more efficiently",
+        "relation": "minimizes",
+        "tail": "idle time"
+    },
+    {
+        "head": "utilizing system resources more efficiently",
+        "relation": "improves",
+        "tail": "overall performance"
+    },
+    {
+        "head": "task granularity",
+        "relation": "has critical relationship with",
+        "tail": "parallel execution efficiency"
+    },
+    {
+        "head": "computation granularity",
+        "relation": "refers to",
+        "tail": "size or scale of individual computational tasks within a parallel computing system"
+    },
+    {
+        "head": "computation granularity",
+        "relation": "limited by",
+        "tail": "inherent bounds"
+    },
+    {
+        "head": "inherent bounds",
+        "relation": "arise from",
+        "tail": "problem characteristics or system architecture"
+    },
+    {
+        "head": "inherent bounds",
+        "relation": "restrict",
+        "tail": "how finely tasks can be divided"
+    },
+    {
+        "head": "inherent bounds",
+        "relation": "restrict",
+        "tail": "how efficiently tasks can be distributed"
+    },
+    {
+        "head": "understanding inherent bounds",
+        "relation": "is crucial for",
+        "tail": "optimizing parallel performance"
+    },
+    {
+        "head": "understanding inherent bounds",
+        "relation": "is crucial for",
+        "tail": "resource utilization"
+    },
+    {
+        "head": "Dense matrix-vector multiplication",
+        "relation": "is",
+        "tail": "fundamental computational operation in high-performance and parallel computing"
+    },
+    {
+        "head": "Dense matrix-vector multiplication",
+        "relation": "involves",
+        "tail": "n² concurrent tasks"
+    },
+    {
+        "head": "Dense matrix-vector multiplication",
+        "relation": "is critical for",
+        "tail": "optimizing performance in large-scale numerical simulations, machine learning, and scientific computing applications"
+    },
+    {
+        "head": "concurrent tasks",
+        "relation": "exchange data with",
+        "tail": "other tasks"
+    },
+    {
+        "head": "data exchange",
+        "relation": "is critical for",
+        "tail": "synchronizing parallel processes, managing resource allocation, and achieving scalable performance across distributed or multi-core architectures"
+    },
+    {
+        "head": "Techniques",
+        "relation": "include",
+        "tail": "message passing interfaces (MPI) and shared memory models"
+    },
+    {
+        "head": "Techniques",
+        "relation": "address challenges such as",
+        "tail": "latency, synchronization, and data integrity in complex parallel systems"
+    },
+    {
+        "head": "communication overhead in parallel computing systems",
+        "relation": "determined by",
+        "tail": "efficiency of data exchange among concurrent tasks"
+    },
+    {
+        "head": "data sharing and transfer",
+        "relation": "are crucial to",
+        "tail": "minimizing communication delays"
+    },
+    {
+        "head": "communication delays",
+        "relation": "impact",
+        "tail": "overall performance of parallel processing environments"
+    },
+    {
+        "head": "tradeoff between decomposition granularity and overheads",
+        "relation": "plays critical role in",
+        "tail": "determining system performance"
+    },
+    {
+        "head": "decomposition granularity",
+        "relation": "refers to",
+        "tail": "fineness of dividing computational tasks into subtasks for parallel execution"
+    },
+    {
+        "head": "overheads",
+        "relation": "encompass",
+        "tail": "communication, synchronization, and management costs introduced by parallelism"
+    },
+    {
+        "head": "excessively fine granularity",
+        "relation": "increases",
+        "tail": "overheads"
+    },
+    {
+        "head": "overheads",
+        "relation": "limit",
+        "tail": "achievable performance bounds"
+    },
+    {
+        "head": "achievable performance bounds",
+        "relation": "are",
+        "tail": "theoretical maximum efficiency of a parallel system"
+    },
+    {
+        "head": "balancing granularity and overheads",
+        "relation": "is essential to",
+        "tail": "optimize resource utilization and scalability"
+    }
+]
