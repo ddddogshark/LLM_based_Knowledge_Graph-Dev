@@ -1,20 +1,21 @@
 from .base_agent import BaseAgent
 from typing import Dict, Any, List
 from src.utils.json_parser import extract_json_from_string
-from src.services.llm_service import generate_text_sync
+from src.services.llm_service import generate_text_async
 import asyncio
 import json
 import os
 
 BATCH_SIZE = 2
 
-class KgBuilderAgent(BaseAgent):
-    def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
-        super().__init__(name, description, api_key, api_url)
-
-import os
 
 class KgBuilderAgent(BaseAgent):
+    """Builds a sub-knowledge graph by extracting triplets from knowledge points.
+
+    Processes knowledge points in batches via an LLM and integrates results
+    into Neo4j. Supports checkpointing for long-running extraction tasks.
+    """
+
     def __init__(self, name: str, description: str, api_key: str = None, api_url: str = None):
         super().__init__(name, description, api_key, api_url)
 
@@ -83,7 +84,7 @@ class KgBuilderAgent(BaseAgent):
             current_batch_num = (i // BATCH_SIZE) + 1
             self._log(f"Sending batch {current_batch_num}/{total_batches} to LLM for triplet extraction.")
             
-            triplets_json_str = generate_text_sync(prompt, temperature=0.3)
+            triplets_json_str = await generate_text_async(prompt, temperature=0.3)
             triplets = extract_json_from_string(triplets_json_str)
 
             if isinstance(triplets, list):

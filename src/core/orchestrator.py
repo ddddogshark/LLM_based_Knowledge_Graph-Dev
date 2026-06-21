@@ -2,37 +2,59 @@
 
 from src.core.agent_manager import AgentManager
 from src.agents.base_agent import BaseAgent
+from src.config import get_logger
 from typing import Dict, Any, Callable, List
 
+logger = get_logger(__name__)
+
+
 class Orchestrator:
+    """Orchestrates a multi-stage knowledge graph construction pipeline.
+
+    Stages are executed sequentially. Each stage runs its assigned agents,
+    followed by an optional quality gate. If the gate fails, the stage is re-run.
+    """
+
     def __init__(self, agent_manager: AgentManager):
         self.agent_manager = agent_manager
         self.pipeline_stages: Dict[str, Dict[str, Any]] = {}
         self.current_stage = None
-        self.context: Dict[str, Any] = {} # Shared context for the pipeline
+        self.context: Dict[str, Any] = {}
 
-    def add_stage(self, stage_name: str, agents: List, gate_function: Callable = None, description: str = ""):
-        """
-        Adds a stage to the pipeline.
-        :param stage_name: Unique name for the stage.
-        :param agents: List of agent names or (agent_name, method_name) tuples.
-        :param gate_function: A callable that acts as a quality gate.
-        :param description: Description of the stage.
+    def add_stage(
+        self,
+        stage_name: str,
+        agents: List,
+        gate_function: Callable = None,
+        description: str = "",
+    ):
+        """Register a stage in the pipeline.
+
+        Args:
+            stage_name: Unique stage identifier.
+            agents: List of agent names or (agent_name, method_name) tuples.
+            gate_function: Optional async callable(context, agent_manager) -> bool.
+            description: Human-readable stage description.
         """
         self.pipeline_stages[stage_name] = {
             "agents": agents,
             "gate_function": gate_function,
             "description": description,
-            "status": "PENDING"
+            "status": "PENDING",
         }
-        print(f"Stage '{stage_name}' added to the pipeline.")
+        logger.info("Stage '%s' added to pipeline.", stage_name)
 
     async def run_pipeline(self, initial_context: Dict[str, Any]):
-        """
-        Executes the defined pipeline stages sequentially.
+        """Execute all stages sequentially.
+
+        Args:
+            initial_context: Shared context dict passed through every stage.
+
+        Returns:
+            Final context dict after all stages complete.
         """
         self.context = initial_context
-        print("Starting pipeline execution...")
+        logger.info("Starting pipeline execution.")
 
         stage_names = list(self.pipeline_stages.keys())
         i = 0
@@ -40,66 +62,39 @@ class Orchestrator:
             stage_name = stage_names[i]
             stage_info = self.pipeline_stages[stage_name]
             self.current_stage = stage_name
-            print(f"\n--- Entering Stage: {stage_name} ---")
-            print(f"Description: {stage_info['description']}")
-            stage_info['status'] = "IN_PROGRESS"
+            logger.info("--- Entering Stage: %s ---", stage_name)
+            stage_info["status"] = "IN_PROGRESS"
 
             try:
                 await self._execute_stage_agents(stage_name)
 
                 if stage_info["gate_function"]:
-                    print(f"--- Applying Quality Gate for Stage: {stage_name} ---")
-                    print(f"DEBUG: Gate function for stage '{stage_name}': {stage_info['gate_function']}")
-                    gate_passed = await stage_info["gate_function"](self.context, self.agent_manager)
-                    print(f"DEBUG: Gate function for stage '{stage_name}' returned: {gate_passed}")
+                    logger.info("Applying quality gate for stage: %s", stage_name)
+                    gate_passed = await stage_info["gate_function"](
+                        self.context, self.agent_manager
+                    )
                     if gate_passed:
-                        print(f"Quality Gate for '{stage_name}' PASSED.")
-                        stage_info['status'] = "COMPLETED"
+                        logger.info("Quality gate '%s' PASSED.", stage_name)
+                        stage_info["status"] = "COMPLETED"
                         i += 1
                     else:
-                        print(f"Quality Gate for '{stage_name}' REJECTED. Re-running stage.")
-                        stage_info['status'] = "REJECTED"
+                        logger.warning("Quality gate '%s' REJECTED. Re-running.", stage_name)
+                        stage_info["status"] = "REJECTED"
                 else:
-                    print(f"No Quality Gate for Stage: {stage_name}. Proceeding to next stage.")
-                    stage_info['status'] = "COMPLETED"
+                    logger.debug("No quality gate for stage: %s", stage_name)
+                    stage_info["status"] = "COMPLETED"
                     i += 1
 
             except Exception as e:
-                print(f"Error during stage '{stage_name}': {e}")
-                stage_info['status'] = "FAILED"
+                logger.error("Error during stage '%s': %s", stage_name, e, exc_info=True)
+                stage_info["status"] = "FAILED"
                 break
 
-        # Save final context for debugging
-        import json
-        with open("final_context.json", "w") as f:
-            # Convert context to a serializable format
-            serializable_context = {}
-            for key, value in self.context.items():
-                if isinstance(value, (str, int, float, bool, list, dict, type(None))):
-                    serializable_context[key] = value
-                else:
-                    serializable_context[key] = str(value)
-            json.dump(serializable_context, f, indent=4)
-
-        print("\n--- Pipeline Execution Finished ---")
-        # Print final context keys for verification
-        print("\n--- Final Context ---")
-        for key, value in self.context.items():
-            if isinstance(value, list) and len(value) > 10:
-                print(f"{key}: (list of {len(value)} items)")
-            elif isinstance(value, str) and len(value) > 200:
-                print(f"{key}: {value[:200]}...")
-            else:
-                print(f"{key}: {value}")
-        
-        print("\n--- Pipeline Status ---")
-        print(self.get_pipeline_status())
+        logger.info("Pipeline execution finished.")
         return self.context
 
     async def _execute_stage_agents(self, stage_name: str):
-        """
-        Executes all agents assigned to a specific stage.
-        """
+        """Execute all agents assigned to a stage."""
         stage_agents = self.pipeline_stages[stage_name]["agents"]
         for agent_spec in stage_agents:
             if isinstance(agent_spec, tuple):
@@ -109,18 +104,18 @@ class Orchestrator:
 
             agent = self.agent_manager.get_agent(agent_name)
             method_to_call = getattr(agent, method_name)
-            
-            print(f"  Executing Agent: {agent.name}, Method: {method_name} ({agent.description})")
+
+            logger.debug("Executing Agent: %s.%s (%s)", agent.name, method_name, agent.description)
             result = await method_to_call(self.context)
-            
-            # Only update context if the agent returns a dictionary
+
             if isinstance(result, dict):
                 self.context = result
-            
-            print(f"  Agent '{agent.name}' finished.")
+
+            logger.debug("Agent '%s' finished.", agent.name)
 
     def get_pipeline_status(self):
-        return {name: stage['status'] for name, stage in self.pipeline_stages.items()}
+        """Return a mapping of stage names to their current status."""
+        return {name: stage["status"] for name, stage in self.pipeline_stages.items()}
 
 # Example usage (for testing purposes)
 if __name__ == "__main__":

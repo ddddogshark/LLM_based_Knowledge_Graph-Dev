@@ -1,115 +1,109 @@
 # src/services/llm_service.py
 
-import requests
 import json
 import time
-import aiohttp # Import aiohttp for asynchronous requests
-import asyncio # Import asyncio for async operations
-from src.config import LLM_API_KEY, LLM_API_URL, LLM_MODEL
-from requests.exceptions import ReadTimeout, HTTPError
+import asyncio
+import aiohttp
+import requests
+from typing import Optional
 
-def generate_text_sync(prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2, backoff_factor: float = 2.0, api_key: str = None, api_url: str = None) -> str:
-    """
-    A synchronous function to generate text using the LLM API with exponential backoff.
-    """
-    api_key_to_use = api_key or LLM_API_KEY
-    api_url_to_use = api_url or LLM_API_URL
+from src.config import LLM_API_KEY, LLM_API_URL, LLM_MODEL, get_logger
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key_to_use}" # Use f-string for Authorization header
-    }
-    data = {
-        "model": LLM_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature
-    }
+logger = get_logger(__name__)
+
+
+def generate_text_sync(
+    prompt: str,
+    temperature: float = 0.7,
+    retries: int = 3,
+    delay: int = 2,
+    backoff_factor: float = 2.0,
+    api_key: Optional[str] = None,
+    api_url: Optional[str] = None,
+) -> str:
+    """Generate text synchronously via LLM API with exponential backoff."""
+    key = api_key or LLM_API_KEY
+    url = api_url or LLM_API_URL
+
+    if not key or not url:
+        logger.error("LLM API key or URL not configured")
+        return "Error: LLM not configured."
+
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {key}"}
+    payload = {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}], "temperature": temperature}
 
     for attempt in range(retries):
         try:
-            response = requests.post(api_url_to_use, headers=headers, data=json.dumps(data), timeout=300.0)
-            response.raise_for_status()
-            response_json = response.json()
-            if "choices" not in response_json:
-                raise KeyError("The 'choices' key was not found in the response.")
-            return response_json["choices"][0]["message"]["content"]
-        except HTTPError as e:
-            if e.response.status_code == 403:
-                print(f"Fatal error calling LLM API: {e.__class__.__name__}: {e}. Stopping retries.")
+            resp = requests.post(url, headers=headers, json=payload, timeout=300.0)
+            resp.raise_for_status()
+            data = resp.json()
+            if "choices" not in data:
+                raise KeyError("Missing 'choices' key in response")
+            return data["choices"][0]["message"]["content"]
+        except requests.HTTPError as e:
+            if e.response is not None and e.response.status_code == 403:
+                logger.fatal("LLM API returned 403 — check API key. Stopping.")
                 return f"Error: {e}"
-            else:
-                print(f"HTTP error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
-        except ReadTimeout as e:
-            print(f"ReadTimeout error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
+            logger.warning("HTTP error (attempt %d/%d): %s", attempt + 1, retries, e)
+        except requests.Timeout as e:
+            logger.warning("Timeout (attempt %d/%d): %s", attempt + 1, retries, e)
         except (KeyError, json.JSONDecodeError) as e:
-            print(f"Error parsing LLM API response (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
-            if 'response' in locals():
-                print(f"Full response: {response.text}")
-        
+            logger.warning("Parse error (attempt %d/%d): %s", attempt + 1, retries, e)
+
         if attempt < retries - 1:
-            sleep_time = delay * (backoff_factor ** attempt)
-            print(f"Retrying in {sleep_time:.2f} seconds...")
+            sleep_time = delay * (backoff_factor**attempt)
+            logger.debug("Retrying in %.2fs...", sleep_time)
             time.sleep(sleep_time)
-        else:
-            return "Error: All retries failed."
 
-async def generate_text_async(prompt: str, temperature: float = 0.7, retries: int = 3, delay: int = 2, backoff_factor: float = 2.0, api_key: str = None, api_url: str = None) -> str:
-    """
-    An asynchronous function to generate text using the LLM API with exponential backoff.
-    """
-    api_key_to_use = api_key or LLM_API_KEY
-    api_url_to_use = api_url or LLM_API_URL
+    logger.error("All %d LLM retries exhausted", retries)
+    return "Error: All retries failed."
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key_to_use}" # Use f-string for Authorization header
-    }
-    data = {
-        "model": LLM_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature
-    }
+
+async def generate_text_async(
+    prompt: str,
+    temperature: float = 0.7,
+    retries: int = 3,
+    delay: int = 2,
+    backoff_factor: float = 2.0,
+    api_key: Optional[str] = None,
+    api_url: Optional[str] = None,
+) -> str:
+    """Generate text asynchronously via LLM API with exponential backoff."""
+    key = api_key or LLM_API_KEY
+    url = api_url or LLM_API_URL
+
+    if not key or not url:
+        logger.error("LLM API key or URL not configured")
+        return "Error: LLM not configured."
+
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {key}"}
+    payload = {"model": LLM_MODEL, "messages": [{"role": "user", "content": prompt}], "temperature": temperature}
 
     for attempt in range(retries):
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(api_url_to_use, headers=headers, data=json.dumps(data), timeout=300.0) as response:
-                    response.raise_for_status()
-                    response_json = await response.json()
-                    if "choices" not in response_json:
-                        raise KeyError("The 'choices' key was not found in the response.")
-                    return response_json["choices"][0]["message"]["content"]
+                async with session.post(url, headers=headers, json=payload, timeout=aiohttp.ClientTimeout(total=300)) as resp:
+                    resp.raise_for_status()
+                    data = await resp.json()
+                    if "choices" not in data:
+                        raise KeyError("Missing 'choices' key in response")
+                    return data["choices"][0]["message"]["content"]
         except aiohttp.ClientResponseError as e:
             if e.status == 403:
-                print(f"Fatal error calling LLM API: {e.__class__.__name__}: {e}. Stopping retries.")
+                logger.fatal("LLM API returned 403 — check API key. Stopping.")
                 return f"Error: {e}"
-            else:
-                print(f"HTTP error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
+            logger.warning("HTTP error (attempt %d/%d): %s", attempt + 1, retries, e)
         except asyncio.TimeoutError:
-            print(f"Timeout error calling LLM API (attempt {attempt + 1}/{retries}).")
+            logger.warning("Timeout (attempt %d/%d)", attempt + 1, retries)
         except (KeyError, json.JSONDecodeError) as e:
-            print(f"Error parsing LLM API response (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
-            # The response object might not be directly available here, so we skip printing full response for async
-        except Exception as e: # Catch other potential aiohttp exceptions
-            print(f"Unexpected error calling LLM API (attempt {attempt + 1}/{retries}): {e.__class__.__name__}: {e}")
-        
+            logger.warning("Parse error (attempt %d/%d): %s", attempt + 1, retries, e)
+        except Exception as e:
+            logger.warning("Unexpected error (attempt %d/%d): %s", attempt + 1, retries, e)
+
         if attempt < retries - 1:
-            sleep_time = delay * (backoff_factor ** attempt)
-            print(f"Retrying in {sleep_time:.2f} seconds...")
-            await asyncio.sleep(sleep_time) # Use asyncio.sleep for async
-        else:
-            return "Error: All retries failed."
+            sleep_time = delay * (backoff_factor**attempt)
+            logger.debug("Retrying in %.2fs...", sleep_time)
+            await asyncio.sleep(sleep_time)
 
-# Example usage (for testing purposes)
-if __name__ == "__main__":
-    test_prompt = "What is the capital of France?"
-    print(f"Querying LLM with prompt: '{test_prompt}' (sync)")
-    response_text_sync = generate_text_sync(test_prompt)
-    print(f"LLM Sync Response: {response_text_sync}")
-
-    async def main_async_test():
-        print(f"Querying LLM with prompt: '{test_prompt}' (async)")
-        response_text_async = await generate_text_async(test_prompt)
-        print(f"LLM Async Response: {response_text_async}")
-
-    asyncio.run(main_async_test())
+    logger.error("All %d async LLM retries exhausted", retries)
+    return "Error: All retries failed."
